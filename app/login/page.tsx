@@ -21,6 +21,5 @@ export default function Login() {
                 </Box>
             </Container>
         </main>
-        
     )
 }
