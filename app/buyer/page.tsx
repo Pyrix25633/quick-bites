@@ -11,6 +11,10 @@ export const metadata: Metadata = {
 }
 
 export default function Home() {
+    const dates: Date[] = [];
+    for(let i = 0; i <20; i++)
+        dates.push(new Date(new Date().getMilliseconds() + (i * 1000 * 60 * 60 * 24)))
+
     return (
         <>
             <AppBar position="sticky">
@@ -27,14 +31,18 @@ export default function Home() {
                     <Stack gap={2}>
                         <Box>
                             <Typography variant="h4">Ordina:</Typography>
-                            <Paper sx={{borderRadius: 5, padding: 2}}>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veniam placeat dignissimos debitis perferendis sunt! Atque earum vero dicta pariatur expedita qui aut nisi delectus laborum minus! Id laboriosam recusandae quos at porro maxime aliquid laudantium? Nesciunt aut at quisquam, non earum fugit fugiat quibusdam asperiores qui. Officiis officia expedita maxime.
+                            <Paper sx={{borderRadius: 5, padding: 1}}>
+                                <Stack className="overflow-x-auto" direction="row" gap={1}>
+                                    {dates.map(date => <DayButton date={date}></DayButton>)}
+                                </Stack>
                             </Paper>
                         </Box>
                         <Box>
                             <Typography variant="h4">Ordini attivi:</Typography>
                             <Paper sx={{borderRadius: 5, padding: 2}}>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi dicta repellat porro suscipit facere, sequi reprehenderit dolore odio laudantium, delectus aliquam ut dolorem. Obcaecati facilis consectetur necessitatibus cum laboriosam architecto alias aperiam ducimus, porro placeat illo nulla velit quos adipisci sit nihil excepturi doloribus omnis dignissimos voluptatem eos ad! Eligendi!
+                                <Stack className="overflow-y-auto" direction="column" gap={1}>
+                                    <OrderButton date={new Date()} total={15} items={['Fil. primavera', 'Toast']}></OrderButton>
+                                </Stack>
                             </Paper>
                         </Box>
                     </Stack>
@@ -42,4 +50,53 @@ export default function Home() {
             </main>
         </>
     )
+}
+
+type DayButtonProps = {
+    date: Date
+};
+
+type OrderButtonProps = {
+    date: Date,
+    total: number,
+    items: string[]
+};
+
+function DayButton({ date }: DayButtonProps) {
+    return (
+        <Paper sx={{borderRadius: 4, padding: 1, textAlign: 'center'}}>
+            <Typography variant="h5">{getDayName(date.getDay())}</Typography>
+            <Typography variant="h4">{date.getDate()}</Typography>
+        </Paper>
+    )
+}
+
+function OrderButton(props: OrderButtonProps) {
+    return (
+        <Paper sx={{borderRadius: 4, padding: 1, textAlign: "center"}}>
+            <Stack direction="row" sx={{justifyContent: "space-between"}}>
+                <Box>
+                    <Typography variant="h5">{getDayName(props.date.getDay())}</Typography>
+                    <Typography variant="h4">{props.date.getDate()}</Typography>
+                </Box>
+                <Box>
+                    <Typography variant="h4">{'€ ' + props.total}</Typography>
+                    {props.items.map(item => <Typography variant="h5">{item}</Typography>)}
+                </Box>
+                <AccountCircleIcon fontSize="large"/>
+            </Stack>
+        </Paper>
+    )
+}
+
+function getDayName(day: number): string {
+    switch(day) {
+        case 1: return 'Lun';
+        case 2: return 'Mar';
+        case 3: return 'Mer';
+        case 4: return 'Gio';
+        case 5: return 'Ven';
+        case 6: return 'Sab';
+        default: return 'Dom';
+    }
 }
