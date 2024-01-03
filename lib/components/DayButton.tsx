@@ -1,15 +1,22 @@
-import { Paper, Typography } from "@mui/material";
-import getDayName from "../utils/getDayName";
+import getDayName from "@/lib/utils/getDayName";
 
 type DayButtonProps = {
-    date: Date
+    date: Date;
+    selected?: boolean;
 };
 
-export default function DayButton({ date }: DayButtonProps) {
+export default function DayButton({ date, selected = false }: DayButtonProps) {
     return (
-        <Paper sx={{borderRadius: 4, padding: 2, textAlign: 'center', minWidth: "5rem"}}>
-            <Typography variant="h5">{getDayName(date.getDay())}</Typography>
-            <Typography variant="h4">{date.getDate()}</Typography>
-        </Paper>
-    )
+        <div
+            className={
+                "flex w-20 shrink-0 flex-col items-center rounded-2xl py-1 " +
+                (selected
+                    ? "bg-primary text-secondary-light"
+                    : "bg-secondary-dark text-primary")
+            }
+        >
+            <div className="text-2xl">{getDayName(date.getDay())}</div>
+            <div className="text-5xl">{date.getDate()}</div>
+        </div>
+    );
 }

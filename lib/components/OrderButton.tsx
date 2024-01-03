@@ -1,27 +1,70 @@
-import { Box, Paper, Stack, Typography } from "@mui/material";
-import QrCodeIcon from '@mui/icons-material/QrCode';
-import getDayName from "../utils/getDayName";
+import getDayName from "@/lib/utils/getDayName";
 
+// Implementare a livello di db
+// type Order = {
+//     date: Date;
+//     totalPrice: number;
+//     itemsList: string[];
+// };
+//
+// type OrderButtonProps = {
+//     order: Order;
+//     selected: boolean;
+// };
 type OrderButtonProps = {
-    date: Date,
-    total: number,
-    items: string[]
+    date: Date;
+    total: number;
+    items: string[];
+    selected?: boolean;
 };
 
-export default function OrderButton(props: OrderButtonProps) {
+export default function OrderButton({
+    date,
+    total,
+    items,
+    selected = false
+}: OrderButtonProps) {
     return (
-        <Paper sx={{borderRadius: 4, padding: 2, textAlign: "center"}}>
-            <Stack direction="row" sx={{justifyContent: "space-between", alignItems: "center"}}>
-                <Box>
-                    <Typography variant="h5">{getDayName(props.date.getDay())}</Typography>
-                    <Typography variant="h4">{props.date.getDate()}</Typography>
-                </Box>
-                <Box>
-                    <Typography variant="h4">{'€ ' + props.total}</Typography>
-                    {props.items.map(item => <Typography variant="h5" key={item}>{item}</Typography>)}
-                </Box>
-                <QrCodeIcon sx={{fontSize: "100px"}}/>
-            </Stack>
-        </Paper>
-    )
+        <div
+            className={
+                "grid grid-cols-3 gap-2 rounded-2xl p-1 " +
+                (selected
+                    ? "bg-primary text-secondary-light"
+                    : "bg-secondary-dark text-primary")
+            }
+        >
+            {/* Elemento giorno */}
+            <div className="flex flex-col items-center justify-center gap-2">
+                <div className="text-3xl">{getDayName(date.getDay())}</div>
+                <div className="text-6xl">{date.getDate()}</div>
+            </div>
+            <div className="self-center text-center">
+                <div className="text-3xl">€ {total}</div>
+                <div className="text-base">
+                    {items.map((item, idx) => (
+                        <div key={idx}>{item}</div>
+                    ))}
+                </div>
+            </div>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="self-center"
+            >
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z"
+                />
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z"
+                />
+            </svg>
+        </div>
+    );
 }

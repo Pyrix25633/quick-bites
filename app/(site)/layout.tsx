@@ -1,23 +1,44 @@
-import { AppBar, IconButton, Toolbar, Typography } from '@mui/material'
-import MenuIcon from "@mui/icons-material/Menu"
-import AccountCircleIcon from "@mui/icons-material/AccountCircle"
-import React from 'react'
+import React from "react";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-        <AppBar position="sticky">
-            <Toolbar sx={{justifyContent: "space-between"}}>
-                <IconButton sx={{padding: 0}} color="inherit">
-                    <MenuIcon fontSize="large"/>
-                </IconButton>
-                <Typography variant="h4">Mario</Typography>
-                <AccountCircleIcon fontSize="large"/>
-            </Toolbar>
-        </AppBar>
-        <main>
+type LayoutProps = {
+    children: React.ReactNode;
+};
+
+export default function Layout({ children }: LayoutProps) {
+    return (
+        <>
+            <header className="flex h-20 items-center justify-between bg-secondary-dark px-4 text-primary">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="h-16 w-16"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                    />
+                </svg>
+                <h2 className="text-4xl">Mario</h2>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="h-16 w-16"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                    />
+                </svg>
+            </header>
             {children}
-        </main>
-    </>
-  )
+        </>
+    );
 }
