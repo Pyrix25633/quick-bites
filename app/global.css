@@ -10,8 +10,12 @@ body {
     margin: 0;
     border: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 main {
     position: relative;
+    flex: 1 1 auto; /* Make body take up the rest of the height */
 }
+
