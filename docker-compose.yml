@@ -1,0 +1,11 @@
+services:
+    db:
+        image: mariadb
+        env_file:
+            - .env
+        ports:
+            - 3306:3306
+    adminer:
+        image: adminer
+        ports:
+            - 8080:8080
