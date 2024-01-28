@@ -16,6 +16,7 @@ model User {
   credit       Decimal @db.Decimal(4, 2)
   schoolId     Int
   school       School  @relation(fields: [schoolId], references: [id])
+  orders       Order[]
 }
 
 model Order {
@@ -24,6 +25,8 @@ model Order {
   deliveryDay     DateTime           @db.Date
   checkedBySeller DateTime?
   checkedByBuyer  Boolean            @default(false)
+  userId          Int
+  user            User               @relation(fields: [userId], references: [id])
   products        ProductsOnOrders[]
 }
 
