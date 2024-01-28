@@ -13,7 +13,7 @@ model User {
   passwordHash String  @db.Char(60)
   email        String  @unique
   role         Role
-  credit       Decimal @db.Decimal(4, 2)
+  credit       Decimal @db.Decimal(6, 2)
   schoolId     Int
   school       School  @relation(fields: [schoolId], references: [id])
   orders       Order[]
@@ -42,7 +42,7 @@ model ProductsOnOrders {
   product    Product @relation(fields: [productId], references: [id])
   productId  Int
   quantity   Int
-  piecePrice Decimal @db.Decimal(2, 2)
+  piecePrice Decimal @db.Decimal(4, 2)
 
   @@id([orderId, productId])
 }
@@ -51,7 +51,7 @@ model Product {
   id          Int                @id @default(autoincrement())
   name        String             @unique
   description String
-  price       Decimal            @db.Decimal(2, 2)
+  price       Decimal            @db.Decimal(4, 2)
   orders      ProductsOnOrders[]
 }
 
