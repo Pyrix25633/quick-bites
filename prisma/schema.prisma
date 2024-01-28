@@ -31,9 +31,9 @@ model Order {
 }
 
 model School {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-  User User[]
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[]
 }
 
 model ProductsOnOrders {
