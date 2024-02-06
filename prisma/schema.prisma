@@ -14,8 +14,8 @@ model User {
   email        String  @unique
   role         Role
   credit       Decimal @db.Decimal(6, 2)
-  schoolId     Int
-  school       School  @relation(fields: [schoolId], references: [id])
+  schoolId     Int?
+  school       School? @relation(fields: [schoolId], references: [id])
   orders       Order[]
 }
 
