@@ -1,3 +1,10 @@
+export function datesReferToSameDay(first: Date, second: Date): boolean {
+    if (first.getFullYear() != second.getFullYear()) return false;
+    if (first.getMonth() != second.getMonth()) return false;
+    if (first.getDate() != second.getDate()) return false;
+    return true;
+}
+
 export default function getDayName(day: number): string {
     switch (day) {
         case 1:
@@ -16,4 +23,3 @@ export default function getDayName(day: number): string {
             return "Dom";
     }
 }
-
