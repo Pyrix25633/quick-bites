@@ -10,8 +10,8 @@ export async function POST(
     request: Request,
     { params }: { params: { orderId: string } }
 ) {
+    //TODO: verify that user owns the order
     const orderId = parseInt(params.orderId);
-    const date = new Date();
     const prisma = new PrismaClient();
     const order: Order | null = await prisma.order.findUnique({
         where: {
@@ -19,16 +19,15 @@ export async function POST(
         }
     });
     if (order == null) return new NotFoundResponse();
-    if (!order.checkedByBuyer) return new ForbiddenResponse();
-    if (order.checkedBySeller != null) return new ForbiddenResponse();
-    if (!datesReferToSameDay(order.deliveryDay, date))
+    if (datesReferToSameDay(order.deliveryDay, new Date()))
         return new ForbiddenResponse();
+    if (order.checkedByBuyer) return new ForbiddenResponse();
     await prisma.order.update({
         where: {
             id: orderId
         },
         data: {
-            checkedBySeller: date
+            checkedByBuyer: true
         }
     });
     return new OkResponse();
