@@ -1,4 +1,4 @@
-import { BadRequestResponse } from "@/lib/web/response";
+import { BadRequestResponse, OkResponse } from "@/lib/web/response";
 import { Order, PrismaClient, Product } from "@prisma/client";
 
 export async function POST(request: Request) {
@@ -49,6 +49,7 @@ export async function POST(request: Request) {
             }
         });
     }
+    return new OkResponse();
 }
 
 type RequestProduct = {
