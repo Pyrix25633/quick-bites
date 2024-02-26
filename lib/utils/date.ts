@@ -5,7 +5,7 @@ export function datesReferToSameDay(first: Date, second: Date): boolean {
     return true;
 }
 
-export default function getDayName(day: number): string {
+export function getDayName(day: number): string {
     switch (day) {
         case 1:
             return "Lun";
