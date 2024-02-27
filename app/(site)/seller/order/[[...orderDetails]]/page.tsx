@@ -7,6 +7,7 @@ import {
     ProductsOnOrders,
     User
 } from "@prisma/client";
+import DeliverOrderButton from "./_components/DeliverOrderButton";
 
 type OrderPageProps = {
     params: {
@@ -89,19 +90,14 @@ function OrderSection({ order }: OrderSectionProps) {
                     />
                 ))}
             </div>
-            {order.checkedBySeller ? (
-                <div className="self-center px-4 py-2 text-2xl font-bold text-primary">
-                    Già consegnato
-                </div>
-            ) : (
-                <button
-                    type="submit"
-                    className="self-center rounded-lg bg-primary px-4 py-2 text-2xl text-secondary-light hover:bg-opacity-50"
-                    // onClick={() => setOrderDelivered(true)}
-                >
-                    Consegna
-                </button>
-            )}
+            <DeliverOrderButton
+                order={{
+                    id: order.id,
+                    checkedBySeller: order.checkedBySeller,
+                    checkedByBuyer: order.checkedByBuyer,
+                    deliveryDay: order.deliveryDay
+                }}
+            />
         </section>
     );
 }
