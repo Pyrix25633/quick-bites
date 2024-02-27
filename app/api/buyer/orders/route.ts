@@ -27,7 +27,7 @@ export async function POST(request: Request) {
         const order: Order = await createOrder(userId, deliveryDay);
         for (const product of products)
             await createProductsOnOrders(order.id, product);
-        return new CreatedResponse();
+        return new CreatedResponse({id: order.id});
     } catch (e: any) {
         if (e instanceof Response) return e;
         return new InternalServerErrorResponse();
