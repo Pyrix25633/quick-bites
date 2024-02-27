@@ -1,59 +1,53 @@
-import { BadRequestResponse, CreatedResponse } from "@/lib/web/response";
+import {
+    BadRequestResponse,
+    CreatedResponse,
+    InternalServerErrorResponse
+} from "@/lib/web/response";
 import { Order, Product } from "@prisma/client";
 import prisma from "@/lib/prisma";
+import { getInt, getObject } from "@/lib/utils/type-validation";
+import { Decimal } from "@prisma/client/runtime/library";
+import { createOrder } from "@/lib/database/order";
+import {
+    RequestProduct,
+    createProductsOnOrders
+} from "@/lib/database/products-on-orders";
+import { subtractFromUserCredit } from "@/lib/database/user";
 
 export async function POST(request: Request) {
-    //TODO: get user id
-    const userId = 0;
-    const json = await request.json();
-    if (json.deliveryDay == undefined || typeof json.deliveryDay != "number")
-        return new BadRequestResponse();
-    const deliveryDay = new Date(json.deliveryDay); //TODO: check that the order can be made for this date
-    let products: RequestProduct[] = [];
-    if (json.products == undefined || typeof json.products == "object")
-        return new BadRequestResponse();
     try {
-        for (const product of json.products) {
-            if (product.id == undefined || typeof product.id != "number")
-                return new BadRequestResponse();
-            if (
-                product.quantity == undefined ||
-                typeof product.quantity != "number"
-            )
-                return new BadRequestResponse();
-            const p: Product | null = await prisma.product.findUnique({
-                where: {
-                    id: product.id
-                }
-            });
-            if (p == null) return new BadRequestResponse();
-            product.piecePrice = p.price;
-            products = products.concat(product);
-        }
-    } catch (e) {
-        return new BadRequestResponse();
+        const userId = 0; //TODO: get user id
+        const json = getObject(await request.json());
+        const deliveryDay = new Date(getInt(json.deliveryDay)); //TODO: check that the order can be made for this date
+        const products: RequestProduct[] = await getRequestProducts(json);
+        let total = new Decimal(0);
+        for (const product of products)
+            total = total.add(product.piecePrice.mul(product.quantity));
+        subtractFromUserCredit(userId, total);
+        const order: Order = await createOrder(userId, deliveryDay);
+        for (const product of products)
+            await createProductsOnOrders(order.id, product);
+        return new CreatedResponse();
+    } catch (e: any) {
+        if (e instanceof Response) return e;
+        return new InternalServerErrorResponse();
     }
-    const order: Order = await prisma.order.create({
-        data: {
-            userId: userId,
-            deliveryDay: deliveryDay
-        }
-    });
-    for (const product of products) {
-        prisma.productsOnOrders.create({
-            data: {
-                orderId: order.id,
-                productId: product.id,
-                quantity: product.quantity,
-                piecePrice: product.piecePrice
-            }
-        });
-    }
-    return new CreatedResponse();
 }
 
-type RequestProduct = {
-    id: number;
-    quantity: number;
-    piecePrice: number;
-};
+async function getRequestProducts(json: any): Promise<RequestProduct[]> {
+    let products: RequestProduct[] = [];
+    for (const product of getObject(json.products)) {
+        getInt(product.id);
+        getInt(product.quantity);
+        const p: Product | null = await prisma.product.findUnique({
+            where: {
+                id: product.id
+            }
+        });
+        if (p == null) throw new BadRequestResponse();
+        product.piecePrice = p.price;
+        products = products.concat(product);
+    }
+    if (products.length == 0) throw new BadRequestResponse();
+    return products;
+}

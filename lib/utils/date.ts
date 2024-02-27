@@ -23,3 +23,11 @@ export function getDayName(day: number): string {
             return "Dom";
     }
 }
+
+export function getNextDay(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+}
+
+export function getPreviousDay(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1);
+}

@@ -1,35 +1,35 @@
+import { selectOrder, updateCheckedBySeller } from "@/lib/database/order";
 import { datesReferToSameDay } from "@/lib/utils/date";
+import { getInt } from "@/lib/utils/type-validation";
 import {
     ForbiddenResponse,
+    InternalServerErrorResponse,
     NotFoundResponse,
     OkResponse
 } from "@/lib/web/response";
 import { Order } from "@prisma/client";
-import prisma from "@/lib/prisma";
 
 export async function POST(
     _request: Request,
     { params }: { params: { orderId: string } }
-) {
-    const orderId = parseInt(params.orderId);
-    const date = new Date();
-    const order: Order | null = await prisma.order.findUnique({
-        where: {
-            id: orderId
-        }
-    });
-    if (order == null) return new NotFoundResponse();
-    if (!order.checkedByBuyer) return new ForbiddenResponse();
-    if (order.checkedBySeller != null) return new ForbiddenResponse();
+): Promise<Response> {
+    try {
+        const orderId = getInt(params.orderId);
+        const date = new Date();
+        const order: Order | null = await selectOrder(orderId);
+        verifyThatOrderCanBeDelivered(order, date);
+        await updateCheckedBySeller(orderId, date);
+        return new OkResponse();
+    } catch (e: any) {
+        if (e instanceof Response) return e;
+        return new InternalServerErrorResponse();
+    }
+}
+
+function verifyThatOrderCanBeDelivered(order: Order | null, date: Date): void {
+    if (order == null) throw new NotFoundResponse();
+    if (!order.checkedByBuyer) throw new ForbiddenResponse();
+    if (order.checkedBySeller != null) throw new ForbiddenResponse();
     if (!datesReferToSameDay(order.deliveryDay, date))
-        return new ForbiddenResponse();
-    await prisma.order.update({
-        where: {
-            id: orderId
-        },
-        data: {
-            checkedBySeller: date
-        }
-    });
-    return new OkResponse();
+        throw new ForbiddenResponse();
 }
