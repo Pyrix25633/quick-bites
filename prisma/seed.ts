@@ -1,4 +1,11 @@
-import { Prisma, PrismaClient, Product, School, User } from "@prisma/client";
+import {
+    Order,
+    Prisma,
+    PrismaClient,
+    Product,
+    School,
+    User
+} from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import * as bcrypt from "bcrypt";
 import { randomInt } from "crypto";
@@ -241,13 +248,11 @@ async function upsertFakeOrder() {
                 from: new Date("2020"),
                 to: getPreviousDay(today)
             });
-            console.log("createdAt" + createdAt);
             const deliveryDay: Date = faker.date.between({
                 from: getNextDay(createdAt),
                 to: today
             });
-            console.log("deliveryDay" + deliveryDay);
-            const order = await prisma.order.create({
+            const order: Order = await prisma.order.create({
                 data: {
                     createdAt: createdAt,
                     deliveryDay: deliveryDay,
@@ -256,14 +261,13 @@ async function upsertFakeOrder() {
                     }
                 }
             });
-            console.log("Order: " + order.id);
             const numberOfProducts = randomInt(1, 6);
             for (let i = 0; i < numberOfProducts; i++) {
                 const product: Product = products[randomInt(products.length)];
                 await prisma.productsOnOrders.create({
                     data: {
                         order: {
-                            connect: order
+                            connect: { id: order.id }
                         },
                         product: {
                             connect: product
@@ -275,7 +279,6 @@ async function upsertFakeOrder() {
             }
             error = false;
         } catch (e) {
-            console.log(e);
             error = true;
         }
     } while (error);

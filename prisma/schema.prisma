@@ -23,6 +23,7 @@ model Order {
   id              Int                @id @default(autoincrement())
   createdAt       DateTime           @default(now())
   deliveryDay     DateTime           @db.Date
+  deliveryCode    String?            @unique
   checkedBySeller DateTime?
   checkedByBuyer  Boolean            @default(false)
   userId          Int

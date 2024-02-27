@@ -18,8 +18,9 @@ export async function POST(
         const orderId = getInt(params.orderId);
         const order: Order | null = await selectOrder(orderId);
         verifyThatOrderDeliveryCanBeRequested(order);
-        await updateCheckedByBuyer(orderId);
-        return new OkResponse();
+        return new OkResponse({
+            deliveryCode: (await updateCheckedByBuyer(orderId)).deliveryCode
+        });
     } catch (e: any) {
         if (e instanceof Response) return e;
         return new InternalServerErrorResponse();

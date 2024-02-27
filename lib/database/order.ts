@@ -1,5 +1,8 @@
 import { Order } from "@prisma/client";
 import prisma from "../prisma";
+import { randomInt } from "crypto";
+
+const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 export async function selectOrder(id: number): Promise<Order | null> {
     return await prisma.order.findUnique({
@@ -22,14 +25,35 @@ export async function createOrder(
 }
 
 export async function updateCheckedByBuyer(id: number): Promise<Order> {
-    return await prisma.order.update({
-        where: {
-            id: id
-        },
-        data: {
-            checkedByBuyer: true
+    let deliverycode: string;
+    let order: Order | null;
+    do {
+        try {
+            deliverycode = generateDeliveryCode();
+            order = await prisma.order.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    checkedByBuyer: true,
+                    deliveryCode: deliverycode
+                }
+            });
+        } catch (e) {
+            order = null;
         }
-    });
+    } while (order == null);
+    return order;
+}
+
+export function generateDeliveryCode(): string {
+    let deliveryCode = "";
+    for (let i = 0; i < 4; i++) deliveryCode += generateChar();
+    return deliveryCode;
+}
+
+function generateChar(): string {
+    return chars[randomInt(chars.length)];
 }
 
 export async function updateCheckedBySeller(

@@ -1,6 +1,6 @@
 export class OkResponse extends Response {
-    constructor() {
-        super(null, { status: 200, statusText: "OK" });
+    constructor(body: object | null = null) {
+        super(JSON.stringify(body), { status: 200, statusText: "OK" });
     }
 }
 
