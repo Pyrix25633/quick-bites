@@ -4,15 +4,15 @@ import {
     NotFoundResponse,
     OkResponse
 } from "@/lib/web/response";
-import { Order, PrismaClient } from "@prisma/client";
+import { Order } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 export async function POST(
-    request: Request,
+    _request: Request,
     { params }: { params: { orderId: string } }
 ) {
     const orderId = parseInt(params.orderId);
     const date = new Date();
-    const prisma = new PrismaClient();
     const order: Order | null = await prisma.order.findUnique({
         where: {
             id: orderId

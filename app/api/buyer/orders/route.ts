@@ -1,9 +1,6 @@
-import {
-    BadRequestResponse,
-    CreatedResponse,
-    OkResponse
-} from "@/lib/web/response";
-import { Order, PrismaClient, Product } from "@prisma/client";
+import { BadRequestResponse, CreatedResponse } from "@/lib/web/response";
+import { Order, Product } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 export async function POST(request: Request) {
     //TODO: get user id
@@ -15,7 +12,6 @@ export async function POST(request: Request) {
     let products: RequestProduct[] = [];
     if (json.products == undefined || typeof json.products == "object")
         return new BadRequestResponse();
-    const prisma = new PrismaClient();
     try {
         for (const product of json.products) {
             if (product.id == undefined || typeof product.id != "number")

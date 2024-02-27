@@ -1,12 +1,6 @@
 import { ProductCard } from "@/lib/components/ProductCard";
-import {
-    Order,
-    Prisma,
-    PrismaClient,
-    Product,
-    ProductsOnOrders,
-    User
-} from "@prisma/client";
+import { Order, Prisma, Product, ProductsOnOrders, User } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import DeliverOrderButton from "./_components/DeliverOrderButton";
 
 type OrderPageProps = {
@@ -18,7 +12,6 @@ type OrderPageProps = {
 export default async function OrderPage({
     params: { orderDetails }
 }: OrderPageProps) {
-    const prisma = new PrismaClient();
     const order = orderDetails?.at(0)
         ? await prisma.order.findUnique({
               where: { id: parseInt(orderDetails[0]) },
