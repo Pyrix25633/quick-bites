@@ -1,4 +1,4 @@
-import getDayName from "@/lib/utils/getDayName";
+import { getDayName } from "@/lib/utils/date";
 
 type DayButtonProps = {
     date: Date;
