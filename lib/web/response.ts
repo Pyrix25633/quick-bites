@@ -1,12 +1,18 @@
 export class OkResponse extends Response {
     constructor(body: object | null = null) {
-        super(body == null ? null : JSON.stringify(body), { status: 200, statusText: "OK" });
+        super(body == null ? null : JSON.stringify(body), {
+            status: 200,
+            statusText: "OK"
+        });
     }
 }
 
 export class CreatedResponse extends Response {
     constructor(body: object | null = null) {
-        super(body == null ? null : JSON.stringify(body), { status: 201, statusText: "Created" });
+        super(body == null ? null : JSON.stringify(body), {
+            status: 201,
+            statusText: "Created"
+        });
     }
 }
 

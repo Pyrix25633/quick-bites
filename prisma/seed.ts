@@ -12,7 +12,6 @@ import { randomInt } from "crypto";
 import { getNextDay, getPreviousDay } from "../lib/utils/date";
 
 const prisma = new PrismaClient();
-let salt: string;
 const schools: School[] = [];
 let itt: School, ite: School, ipsia: School;
 const users: User[] = [];
@@ -20,7 +19,6 @@ const products: Product[] = [];
 
 async function main() {
     console.log("Seeding 'School'...");
-    salt = await bcrypt.genSalt(12);
     await upsertSchools();
     console.log("'School' seeded");
 
@@ -87,7 +85,7 @@ async function upsertUsers() {
         update: {},
         create: {
             username: "lorenzo.ianotto",
-            passwordHash: await bcrypt.hash("Ian8@", salt),
+            passwordHash: await bcrypt.hash("Ian8@", 12),
             email: "lorenzo.ianotto@iisvittorioveneto.it",
             role: "BUYER",
             credit: new Prisma.Decimal(50.4),
@@ -102,7 +100,7 @@ async function upsertUsers() {
         update: {},
         create: {
             username: "mattia.biral",
-            passwordHash: await bcrypt.hash("@Biral#", salt),
+            passwordHash: await bcrypt.hash("@Biral#", 12),
             email: "mattia.biral@iisvittorioveneto.it",
             role: "BUYER",
             credit: new Prisma.Decimal(50.2),
@@ -117,7 +115,7 @@ async function upsertUsers() {
         update: {},
         create: {
             username: "tony.fassina",
-            passwordHash: await bcrypt.hash("F4ss1n4", salt),
+            passwordHash: await bcrypt.hash("F4ss1n4", 12),
             email: "tony.fassina@example.com",
             role: "BUYER",
             credit: new Prisma.Decimal(20.4),
@@ -132,7 +130,7 @@ async function upsertUsers() {
         update: {},
         create: {
             username: "silvio.denardi",
-            passwordHash: await bcrypt.hash("Paolone", salt),
+            passwordHash: await bcrypt.hash("Paolone", 12),
             email: "silvio.denardi@example.com",
             role: "BUYER",
             credit: new Prisma.Decimal(69.4),
@@ -147,7 +145,7 @@ async function upsertUsers() {
         update: {},
         create: {
             username: "cincia.fosforo",
-            passwordHash: await bcrypt.hash("Botecia", salt),
+            passwordHash: await bcrypt.hash("Botecia", 12),
             email: "cincia.fosforo@example.com",
             role: "BUYER",
             credit: new Prisma.Decimal(10.4),
@@ -162,7 +160,7 @@ async function upsertUsers() {
         update: {},
         create: {
             username: "simon.tacastaca",
-            passwordHash: await bcrypt.hash("CiStannoTracciando", salt),
+            passwordHash: await bcrypt.hash("CiStannoTracciando", 12),
             email: "simon.tacastaca@example.com",
             role: "SELLER",
             credit: new Prisma.Decimal(190.4),
@@ -192,7 +190,7 @@ async function upsertFakeUser() {
                     username: username,
                     passwordHash: await bcrypt.hash(
                         faker.internet.password(),
-                        salt
+                        12
                     ),
                     email: username + "@iisvittorioveneto.it",
                     role: "BUYER",
