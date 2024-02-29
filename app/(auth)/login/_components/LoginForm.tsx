@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import React, { ForwardedRef, useState } from "react";
 import { InputHTMLAttributes } from "react";
-import { GetRequestBody } from "@/app/api/auth/login/route";
+import { GetRequestBody } from "@/app/api/all/login/route";
 import { useRouter } from "next/navigation";
 
 //  TODO: add errors to text inputs (red circle and description underneath)
