@@ -8,14 +8,15 @@ datasource db {
 }
 
 model User {
-  id           Int     @id @default(autoincrement())
-  username     String  @unique
-  passwordHash String  @db.Char(60)
-  email        String  @unique
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String   @db.Char(60)
+  email        String   @unique
+  language     Language @default(IT)
   role         Role
-  credit       Decimal @db.Decimal(6, 2)
+  credit       Decimal  @db.Decimal(6, 2)
   schoolId     Int?
-  school       School? @relation(fields: [schoolId], references: [id])
+  school       School?  @relation(fields: [schoolId], references: [id])
   orders       Order[]
 }
 
@@ -60,4 +61,9 @@ enum Role {
   BUYER
   SELLER
   ADMIN
+}
+
+enum Language {
+  IT
+  EN
 }
