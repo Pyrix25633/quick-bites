@@ -13,12 +13,12 @@
     },
     "dependencies": {
         "@prisma/client": "^5.8.1",
-        "@types/bcrypt": "^5.0.2",
         "accept-language": "^3.0.18",
         "axios": "^1.6.7",
         "bcrypt": "^5.1.1",
         "i18next": "^23.10.0",
         "i18next-resources-to-backend": "^1.2.0",
+        "jsonwebtoken": "^9.0.2",
         "next": "14.0.2",
         "next-i18next": "^15.2.0",
         "nodemon": "^3.0.1",
@@ -29,6 +29,8 @@
     "devDependencies": {
         "@faker-js/faker": "^8.4.1",
         "@tailwindcss/forms": "^0.5.7",
+        "@types/bcrypt": "^5.0.2",
+        "@types/jsonwebtoken": "^9.0.6",
         "@types/node": "^20",
         "@types/react": "^18",
         "@types/react-dom": "^18",
