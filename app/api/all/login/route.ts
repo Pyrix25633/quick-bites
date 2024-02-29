@@ -49,7 +49,11 @@ export async function POST(request: Request) {
 
     if (passwordIsRight) {
         const res = NextResponse.json({});
-        res.cookies.set("auth_token", getNewToken(user.id));
+        res.cookies.set("auth_token", getNewToken(user.id), {
+            httpOnly: true,
+            sameSite: "strict",
+            secure: process.env.NODE_ENV === "production"
+        });
         res.cookies.set(cookieName, user.language.toLowerCase());
 
         return res;

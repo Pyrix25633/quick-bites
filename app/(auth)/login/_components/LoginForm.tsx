@@ -22,7 +22,7 @@ function LoginForm() {
 
     const onSubmit = (data: FormValues) => {
         axios
-            .post("/api/auth/login", data)
+            .post("/api/all/login", data)
             .then((_) => router.push("/"))
             .catch((err) => {
                 if (err?.response?.status) {
