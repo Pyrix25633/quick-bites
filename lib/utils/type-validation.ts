@@ -13,6 +13,14 @@ export function getInt(raw: any): number {
     return raw;
 }
 
+export function getIntOrNull(raw: any): number | null {
+    if (raw !== null && (raw === undefined || typeof raw != "number"))
+        throw new BadRequestResponse();
+    if (raw == null) return null;
+    if (!Number.isSafeInteger(raw)) throw new BadRequestResponse();
+    return raw;
+}
+
 export function getFloat(raw: any): number {
     if (raw == undefined || typeof raw != "number")
         throw new BadRequestResponse();
