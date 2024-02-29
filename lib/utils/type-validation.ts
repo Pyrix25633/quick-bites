@@ -39,3 +39,10 @@ export function getNonEmptyString(raw: any): string {
     if (raw.length == 0) throw new BadRequestResponse();
     return raw;
 }
+
+export function getNonEmptyStringOrUndefined(raw: any): string | undefined {
+    if (raw == undefined) return undefined;
+    if (typeof raw != "string") throw new BadRequestResponse();
+    if (raw.length == 0) throw new BadRequestResponse();
+    return raw;
+}

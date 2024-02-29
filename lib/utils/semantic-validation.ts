@@ -1,5 +1,9 @@
-import { Role } from "@prisma/client";
-import { getIntOrNull, getNonEmptyString } from "./type-validation";
+import { Language, Role } from "@prisma/client";
+import {
+    getIntOrNull,
+    getNonEmptyString,
+    getNonEmptyStringOrUndefined
+} from "./type-validation";
 import { BadRequestResponse, UnauthorizedResponse } from "../web/response";
 
 export function getUserId(): number {
@@ -27,6 +31,17 @@ export function getRole(raw: any): Role {
     });
     if (role == undefined) throw new BadRequestResponse();
     return role;
+}
+
+export function getLanguageOrUndefined(raw: any): Language | undefined {
+    const parsed = getNonEmptyStringOrUndefined(raw);
+    if (parsed === undefined) return undefined;
+    let language;
+    language = Object.values(Language).forEach((value) => {
+        if (value == parsed) return value;
+    });
+    if (language == undefined) throw new BadRequestResponse();
+    return language;
 }
 
 export function getSchoolId(raw: any, role: Role): number | null {
