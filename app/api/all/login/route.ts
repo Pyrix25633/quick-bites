@@ -1,3 +1,4 @@
+import { cookieName } from "@/i18n/settings";
 import { getNewToken } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import {
@@ -8,7 +9,7 @@ import {
 import * as bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
 
-type GetRequestBody = {
+export type GetRequestBody = {
     username: string;
     password: string;
 };
@@ -29,7 +30,8 @@ export async function POST(request: Request) {
     const user = await prisma.user.findUnique({
         select: {
             id: true,
-            passwordHash: true
+            passwordHash: true,
+            language: true
         },
         where: {
             username: req.username
@@ -48,6 +50,7 @@ export async function POST(request: Request) {
     if (passwordIsRight) {
         const res = NextResponse.json({});
         res.cookies.set("auth_token", getNewToken(user.id));
+        res.cookies.set(cookieName, user.language.toLowerCase());
 
         return res;
     }
