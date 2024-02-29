@@ -12,7 +12,7 @@ import {
 import { createUser } from "@/lib/database/user";
 import { findSchool } from "@/lib/database/school";
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<Response> {
     try {
         const json = getObject(await request.json());
         const email = getEmail(json.email);

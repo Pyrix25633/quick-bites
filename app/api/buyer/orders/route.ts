@@ -16,7 +16,7 @@ import {
 import { subtractFromUserCredit } from "@/lib/database/user";
 import { getUserId } from "@/lib/utils/semantic-validation";
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<Response> {
     try {
         const userId = getUserId();
         if (userId == null) throw new UnauthorizedResponse();
