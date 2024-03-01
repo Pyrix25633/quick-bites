@@ -15,11 +15,11 @@ import {
 } from "@/lib/database/products-on-orders";
 import { subtractFromUserCredit } from "@/lib/database/user";
 import { getUserId } from "@/lib/utils/semantic-validation";
+import { findProduct } from "@/lib/database/product";
 
 export async function POST(request: Request): Promise<Response> {
     try {
         const userId = getUserId();
-        if (userId == null) throw new UnauthorizedResponse();
         const json = getObject(await request.json());
         const deliveryDay = new Date(getInt(json.deliveryDay)); //TODO: check that the order can be made for this date
         const products: RequestProduct[] = await getRequestProducts(json);
@@ -42,8 +42,7 @@ async function getRequestProducts(json: any): Promise<RequestProduct[]> {
     for (const product of getObject(json.products)) {
         getInt(product.id);
         getInt(product.quantity);
-        const p: Product | null = await product.id;
-        if (p == null) throw new BadRequestResponse();
+        const p: Product = await findProduct(product.id);
         product.piecePrice = p.price;
         products = products.concat(product);
     }

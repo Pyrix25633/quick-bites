@@ -16,7 +16,7 @@ export async function POST(
     try {
         const orderId = getInt(params.orderId);
         const date = new Date();
-        const order: Order | null = await selectOrder(orderId);
+        const order: Order = await selectOrder(orderId);
         verifyThatOrderCanBeDelivered(order, date);
         await updateCheckedBySeller(orderId, date);
         return new OkResponse();
@@ -26,8 +26,7 @@ export async function POST(
     }
 }
 
-function verifyThatOrderCanBeDelivered(order: Order | null, date: Date): void {
-    if (order == null) throw new NotFoundResponse();
+function verifyThatOrderCanBeDelivered(order: Order, date: Date): void {
     if (!order.checkedByBuyer) throw new ForbiddenResponse();
     if (order.checkedBySeller != null) throw new ForbiddenResponse();
     if (!datesReferToSameDay(order.deliveryDay, date))

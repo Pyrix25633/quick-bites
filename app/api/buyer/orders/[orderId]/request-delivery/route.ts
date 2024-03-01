@@ -18,7 +18,7 @@ export async function POST(
     try {
         const userId = getUserId();
         const orderId = getInt(params.orderId);
-        const order: Order | null = await selectOrder(orderId);
+        const order: Order = await selectOrder(orderId);
         verifyThatOrderDeliveryCanBeRequested(order, userId);
         return new OkResponse({
             deliveryCode: (await updateCheckedByBuyer(orderId)).deliveryCode
@@ -30,10 +30,9 @@ export async function POST(
 }
 
 function verifyThatOrderDeliveryCanBeRequested(
-    order: Order | null,
+    order: Order,
     userId: number
 ): void {
-    if (order == null) throw new NotFoundResponse();
     if (order.userId != userId) throw new UnauthorizedResponse();
     if (datesReferToSameDay(order.deliveryDay, new Date()))
         throw new ForbiddenResponse();
