@@ -1,63 +1,37 @@
 import { cookieName } from "@/i18n/settings";
 import { getNewToken } from "@/lib/auth";
-import prisma from "@/lib/prisma";
+import { findUserFromUsername } from "@/lib/database/user";
+import { getNonEmptyString, getObject } from "@/lib/utils/type-validation";
 import {
-    BadRequestResponse,
-    NotFoundResponse,
+    InternalServerErrorResponse,
     UnauthorizedResponse
 } from "@/lib/web/response";
 import * as bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
 
-export type GetRequestBody = {
+export type RequestLogin = {
     username: string;
     password: string;
 };
 
 export async function POST(request: Request) {
-    const req = (await request.json()) as GetRequestBody;
-
-    const isValidRequest =
-        req.username != null &&
-        req.password != null &&
-        typeof req.username == "string" &&
-        typeof req.password == "string";
-
-    if (!isValidRequest) {
-        return new BadRequestResponse();
-    }
-
-    const user = await prisma.user.findUnique({
-        select: {
-            id: true,
-            passwordHash: true,
-            language: true
-        },
-        where: {
-            username: req.username
-        }
-    });
-
-    if (!user) {
-        return new NotFoundResponse();
-    }
-
-    const passwordIsRight = await bcrypt.compare(
-        req.password,
-        user.passwordHash
-    );
-
-    if (passwordIsRight) {
-        const res = NextResponse.json({});
-        res.cookies.set("auth_token", getNewToken(user.id), {
+    try {
+        const json = getObject(await request.json());
+        const username = getNonEmptyString(json.username);
+        const password = getNonEmptyString(json.password);
+        const user = await findUserFromUsername(username);
+        if (!bcrypt.compare(password, user.passwordHash))
+            throw new UnauthorizedResponse();
+        const response = NextResponse.json({ role: user.role });
+        response.cookies.set("auth_token", getNewToken(user.id), {
             httpOnly: true,
             sameSite: "strict",
             secure: process.env.NODE_ENV === "production"
         });
-        res.cookies.set(cookieName, user.language.toLowerCase());
-
-        return res;
+        response.cookies.set(cookieName, user.language.toLowerCase());
+        return response;
+    } catch (e: any) {
+        if (e instanceof Response) return e;
+        return new InternalServerErrorResponse();
     }
-
-    return new UnauthorizedResponse();
 }

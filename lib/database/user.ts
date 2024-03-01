@@ -34,6 +34,16 @@ export async function findUser(id: number): Promise<User> {
     return user;
 }
 
+export async function findUserFromUsername(username: string): Promise<User> {
+    const user: User | null = await prisma.user.findUnique({
+        where: {
+            username: username
+        }
+    });
+    if (user == null) throw new NotFoundResponse();
+    return user;
+}
+
 export async function subtractFromUserCredit(
     id: number,
     total: Decimal

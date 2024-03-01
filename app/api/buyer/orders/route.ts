@@ -2,7 +2,8 @@ import {
     BadRequestResponse,
     CreatedResponse,
     InternalServerErrorResponse,
-    UnauthorizedResponse
+    UnauthorizedResponse,
+    UnprocessableContentResponse
 } from "@/lib/web/response";
 import { Order, Product } from "@prisma/client";
 import prisma from "@/lib/prisma";
@@ -16,10 +17,11 @@ import {
 import { subtractFromUserCredit } from "@/lib/database/user";
 import { getUserId } from "@/lib/utils/semantic-validation";
 import { findProduct } from "@/lib/database/product";
+import { protectRoute } from "@/lib/auth";
 
 export async function POST(request: Request): Promise<Response> {
     try {
-        const userId = getUserId();
+        const userId = await protectRoute(["BUYER"]);
         const json = getObject(await request.json());
         const deliveryDay = new Date(getInt(json.deliveryDay)); //TODO: check that the order can be made for this date
         const products: RequestProduct[] = await getRequestProducts(json);
@@ -42,9 +44,13 @@ async function getRequestProducts(json: any): Promise<RequestProduct[]> {
     for (const product of getObject(json.products)) {
         getInt(product.id);
         getInt(product.quantity);
-        const p: Product = await findProduct(product.id);
-        product.piecePrice = p.price;
-        products = products.concat(product);
+        try {
+            const p: Product = await findProduct(product.id);
+            product.piecePrice = p.price;
+            products = products.concat(product);
+        } catch (e: any) {
+            throw new UnprocessableContentResponse();
+        }
     }
     if (products.length == 0) throw new BadRequestResponse();
     return products;

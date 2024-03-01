@@ -11,9 +11,11 @@ import {
 } from "@/lib/utils/semantic-validation";
 import { createUser } from "@/lib/database/user";
 import { findSchool } from "@/lib/database/school";
+import { protectRoute } from "@/lib/auth";
 
 export async function POST(request: Request): Promise<Response> {
     try {
+        await protectRoute(["ADMIN"]);
         const json = getObject(await request.json());
         const email = getEmail(json.email);
         const usernameMatch = email.match(/^(.+)@/);

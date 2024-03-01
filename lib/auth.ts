@@ -36,7 +36,7 @@ export function getUserId(): number | null {
 
 type Role = "BUYER" | "SELLER" | "ADMIN";
 
-export async function protectRoute(permittedRoles: Role[]) {
+export async function protectRoute(permittedRoles: Role[]): Promise<number> {
     const userId = getUserId();
 
     if (userId == null) throw new ForbiddenResponse();
@@ -53,7 +53,7 @@ export async function protectRoute(permittedRoles: Role[]) {
     if (user == null) throw new ForbiddenResponse();
 
     if (permittedRoles.includes(user.role)) {
-        return;
+        return userId;
     }
 
     throw new ForbiddenResponse();

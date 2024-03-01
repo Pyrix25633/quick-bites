@@ -14,12 +14,11 @@ import {
 } from "@/lib/utils/type-validation";
 import {
     BadRequestResponse,
-    ForbiddenResponse,
     InternalServerErrorResponse,
-    OkResponse,
     UnauthorizedResponse
 } from "@/lib/web/response";
 import { cookieName } from "@/i18n/settings";
+import { NextResponse } from "next/server";
 
 export async function PATCH(request: Request): Promise<Response> {
     try {
@@ -37,13 +36,10 @@ export async function PATCH(request: Request): Promise<Response> {
                 throw new UnauthorizedResponse();
             await updateUserPassword(userId, password);
         }
-        let response = new OkResponse();
+        const response = NextResponse.json({});
         if (language != undefined) {
             await updateUserLanguage(userId, language);
-            response.headers.append(
-                "Set-Cookie",
-                cookieName + "=" + language.toLowerCase()
-            );
+            response.cookies.set(cookieName, language.toLowerCase());
         }
         return response;
     } catch (e: any) {

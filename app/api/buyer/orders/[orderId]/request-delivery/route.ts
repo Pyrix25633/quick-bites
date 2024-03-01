@@ -1,3 +1,4 @@
+import { protectRoute } from "@/lib/auth";
 import { selectOrder, updateCheckedByBuyer } from "@/lib/database/order";
 import { datesReferToSameDay } from "@/lib/utils/date";
 import { getUserId } from "@/lib/utils/semantic-validation";
@@ -16,7 +17,7 @@ export async function POST(
     { params }: { params: { orderId: string } }
 ): Promise<Response> {
     try {
-        const userId = getUserId();
+        const userId = await protectRoute(["BUYER"]);
         const orderId = getInt(params.orderId);
         const order: Order = await selectOrder(orderId);
         verifyThatOrderDeliveryCanBeRequested(order, userId);

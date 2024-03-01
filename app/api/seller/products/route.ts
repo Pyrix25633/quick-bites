@@ -1,3 +1,4 @@
+import { protectRoute } from "@/lib/auth";
 import { createProduct } from "@/lib/database/product";
 import { getDecimal } from "@/lib/utils/semantic-validation";
 import { getNonEmptyString, getObject } from "@/lib/utils/type-validation";
@@ -9,6 +10,7 @@ import {
 
 export async function POST(request: Request): Promise<Response> {
     try {
+        await protectRoute(["SELLER"]);
         const json = getObject(await request.json());
         const name = getNonEmptyString(json.name);
         const description = getNonEmptyString(json.name);

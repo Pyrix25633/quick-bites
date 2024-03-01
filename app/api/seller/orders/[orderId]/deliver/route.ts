@@ -1,10 +1,10 @@
+import { protectRoute } from "@/lib/auth";
 import { selectOrder, updateCheckedBySeller } from "@/lib/database/order";
 import { datesReferToSameDay } from "@/lib/utils/date";
 import { getInt } from "@/lib/utils/type-validation";
 import {
     ForbiddenResponse,
     InternalServerErrorResponse,
-    NotFoundResponse,
     OkResponse
 } from "@/lib/web/response";
 import { Order } from "@prisma/client";
@@ -14,6 +14,7 @@ export async function POST(
     { params }: { params: { orderId: string } }
 ): Promise<Response> {
     try {
+        await protectRoute(["SELLER"]);
         const orderId = getInt(params.orderId);
         const date = new Date();
         const order: Order = await selectOrder(orderId);
