@@ -45,7 +45,7 @@ export async function PATCH(request: Request): Promise<Response> {
                 cookieName + "=" + language.toLowerCase()
             );
         }
-        return new OkResponse();
+        return response;
     } catch (e: any) {
         if (e instanceof Response) return e;
         return new InternalServerErrorResponse();
