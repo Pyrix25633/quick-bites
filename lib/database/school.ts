@@ -8,3 +8,7 @@ export async function findSchool(id: number): Promise<School | null> {
         }
     });
 }
+
+export async function findSchools(): Promise<School[]> {
+    return await prisma.school.findMany();
+}

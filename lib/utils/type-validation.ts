@@ -13,6 +13,14 @@ export function getInt(raw: any): number {
     return raw;
 }
 
+export function getIntFromString(raw: string): number {
+    if (raw == undefined || typeof raw != "string")
+        throw new BadRequestResponse();
+    const parsed = parseInt(raw);
+    if (!Number.isSafeInteger(parsed)) throw new BadRequestResponse();
+    return parsed;
+}
+
 export function getIntOrNull(raw: any): number | null {
     if (raw !== null && (raw === undefined || typeof raw != "number"))
         throw new BadRequestResponse();

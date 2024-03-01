@@ -1,0 +1,72 @@
+{
+    "pages": {
+        "home": {
+            "metadata": {
+                "title": "QuickBites - Home",
+                "description": "QuickBites' Home Page"
+            },
+            "welcome": "Welcome on QuickBites!"
+        },
+        "login": {
+            "metadata": {
+                "title": "QuickBites - Login",
+                "description": "QuickBites' Login Page"
+            }
+        },
+        "buyer": {
+            "metadata": {
+                "title": "QuickBites - Buyer Home",
+                "description": "QuickBites' Buyer Home Page"
+            },
+            "new-order": "New Order",
+            "active-orders": "Active Orders"
+        },
+        "seller": {
+            "metadata": {
+                "title": "QuickBites - Select School",
+                "description": "QuickBites' Seller School Selector"
+            },
+            "select-school": "Select School"
+        },
+        "school": {
+            "metadata": {
+                "title": "QuickBites - Seller Home",
+                "description": "QuickBites' Seller Home Page"
+            }
+        }
+    },
+    "components": {
+        "login-form": {
+            "username": "Username",
+            "password": "Password",
+            "login": "Login",
+            "errors": {
+                "user-not-found": "User not found",
+                "wrong-password": "Wrong password",
+                "server-error": "Server error",
+                "network-error": "Network error"
+            }
+        },
+        "view-products-section": {
+            "orders-per-day": "Orders per Day"
+        },
+        "deliver-order-section": {
+            "deliver-order": "Deliver Order",
+            "code": "Code",
+            "search": "Search",
+            "already-delivered": "Already Delivered",
+            "deliver": "Deliver"
+        }
+    },
+    "functions": {
+        "date": {
+            "mon": "Mon",
+            "tue": "Tue",
+            "wed": "Wed",
+            "thu": "Thu",
+            "fri": "Fri",
+            "sat": "Sat",
+            "sun": "Sun"
+        }
+    }
+}

@@ -13,19 +13,18 @@
     },
     "dependencies": {
         "@prisma/client": "^5.8.1",
+        "@types/lodash.pick": "^4.4.9",
         "accept-language": "^3.0.18",
         "axios": "^1.6.7",
         "bcrypt": "^5.1.1",
-        "i18next": "^23.10.0",
-        "i18next-resources-to-backend": "^1.2.0",
         "jsonwebtoken": "^9.0.2",
+        "lodash.pick": "^3.1.0",
         "next": "14.0.2",
-        "next-i18next": "^15.2.0",
+        "next-intl": "^3.9.1",
         "nodemon": "^3.0.1",
         "react": "^18",
         "react-dom": "^18",
-        "react-hook-form": "^7.50.1",
-        "react-i18next": "^14.0.5"
+        "react-hook-form": "^7.50.1"
     },
     "devDependencies": {
         "@faker-js/faker": "^8.4.1",

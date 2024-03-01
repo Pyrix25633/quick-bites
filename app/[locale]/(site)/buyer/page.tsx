@@ -1,13 +1,17 @@
 import DayButton from "@/lib/components/DayButton";
 import OrderButton from "@/lib/components/OrderButton";
 import { Metadata } from "next";
+import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-    title: "Home",
-    description: "See your orders and order food"
-};
+export async function generateMetadata(): Promise<Metadata> {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const t = await getTranslations("pages.buyer.metadata");
+    return { title: t("title"), description: t("description") };
+}
 
-export default function Home() {
+export default function Buyer() {
+    const t = useTranslations("pages.buyer");
     const dates: Date[] = [];
     for (let i = 0; i < 20; i++)
         dates.push(
@@ -18,7 +22,9 @@ export default function Home() {
     return (
         <main className="container grid grid-cols-1 gap-y-8 py-4">
             <section className="space-y-2">
-                <h2 className="text-5xl text-secondary-light">Ordina</h2>
+                <h2 className="text-5xl text-secondary-light">
+                    {t("new-order")}
+                </h2>
                 <div className="flex gap-1 overflow-scroll rounded-2xl bg-secondary-light p-2">
                     {dates.map((d, i) => (
                         <DayButton key={i} date={d} selected={i === 0} />
@@ -26,7 +32,9 @@ export default function Home() {
                 </div>
             </section>
             <section className="space-y-2">
-                <h2 className="text-5xl text-secondary-light">Ordini attivi</h2>
+                <h2 className="text-5xl text-secondary-light">
+                    {t("active-orders")}
+                </h2>
                 <div className="flex flex-col items-stretch gap-3 rounded-2xl bg-secondary-light p-2">
                     {dates.map((d, i) => (
                         <OrderButton

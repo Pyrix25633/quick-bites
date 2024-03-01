@@ -1,5 +1,6 @@
 import DayButton from "@/lib/components/DayButton";
 import { ProductCard } from "@/lib/components/ProductCard";
+import { useTranslations } from "next-intl";
 
 type ViewProductsSectionProps = {
     schoolId: number;
@@ -8,6 +9,7 @@ type ViewProductsSectionProps = {
 export default function ViewProductsSection({
     schoolId
 }: ViewProductsSectionProps) {
+    const t = useTranslations("components.view-products-section");
     const dates: Date[] = [];
     for (let i = 0; i < 20; i++)
         dates.push(
@@ -19,7 +21,7 @@ export default function ViewProductsSection({
         <section className="space-y-4">
             <section className="space-y-2">
                 <h2 className="text-4xl text-secondary-light">
-                    Ordini per giorno
+                    {t("orders-per-day")}
                 </h2>
                 <div className="flex gap-1 overflow-scroll rounded-2xl bg-secondary-light p-2">
                     {dates.map((d, i) => (

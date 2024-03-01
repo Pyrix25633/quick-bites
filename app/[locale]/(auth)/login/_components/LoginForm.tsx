@@ -6,11 +6,13 @@ import React, { ForwardedRef, useState } from "react";
 import { InputHTMLAttributes } from "react";
 import { RequestLogin } from "@/app/api/all/login/route";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 //  TODO: add errors to text inputs (red circle and description underneath)
 type FormValues = RequestLogin;
 
 function LoginForm() {
+    const t = useTranslations("components.login-form");
     const router = useRouter();
     const {
         register,
@@ -30,16 +32,16 @@ function LoginForm() {
                 if (err?.response?.status) {
                     switch (err.response.status) {
                         case 404:
-                            setErrorMessage("Utente non esistente");
+                            setErrorMessage(t("errors.user-not-found"));
                             break;
                         case 401:
-                            setErrorMessage("Password errata");
+                            setErrorMessage(t("errors.wrong-password"));
                             break;
                         default:
-                            setErrorMessage("Errore di comunicazione");
+                            setErrorMessage(t("errors.server-error"));
                     }
                 } else {
-                    setErrorMessage("Errore di rete");
+                    setErrorMessage(t("errors.network-error"));
                 }
             });
     };
@@ -50,12 +52,12 @@ function LoginForm() {
             className="flex w-full max-w-sm flex-col items-stretch gap-4 rounded-2xl bg-secondary-light p-10"
         >
             <TextInput
-                label="Username"
+                label={t("username")}
                 type="text"
                 {...register("username", { required: true })}
             />
             <TextInput
-                label="Password"
+                label={t("password")}
                 type="password"
                 {...register("password", { required: true })}
             />
@@ -64,7 +66,7 @@ function LoginForm() {
                 type="submit"
                 className="self-center rounded-2xl bg-primary px-4 py-2 text-2xl text-secondary-light"
             >
-                Entra
+                {t("login")}
             </button>
         </form>
     );

@@ -7,12 +7,14 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-    children
+    children,
+    params: { locale }
 }: {
     children: React.ReactNode;
+    params: { locale: string };
 }) {
     return (
-        <html>
+        <html lang={locale}>
             <body className="min-h-screen bg-primary">{children}</body>
         </html>
     );

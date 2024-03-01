@@ -1,19 +1,11 @@
-import { NextMiddleware, NextRequest, NextResponse } from "next/server";
-import acceptLanguage from "accept-language";
-import { fallbackLanguage, languages, cookieName } from "./i18n/settings";
-import { withLocalization } from "./middlewares/withLocalization";
+import createMiddleware from "next-intl/middleware";
+import { defaultLocale, locales } from "./i18n";
 
-acceptLanguage.languages(languages);
+export default createMiddleware({
+    locales: locales,
+    defaultLocale: defaultLocale
+});
+
 export const config = {
-    matcher: ["/((?!_next/static|_next/image|assets|favicon.ico|sw.js).*)"]
+    matcher: ["/((?!api|_next/static|_next/image|assets|favicon.ico|sw.js).*)"]
 };
-
-export function middleware(request: NextRequest): NextResponse {
-    try {
-        withLocalization(request);
-    } catch (e) {
-        if (e instanceof NextResponse) return e;
-        throw e;
-    }
-    return NextResponse.next();
-}

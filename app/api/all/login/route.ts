@@ -1,4 +1,4 @@
-import { cookieName } from "@/i18n/settings";
+import { cookieName } from "@/i18n";
 import { getNewToken } from "@/lib/auth";
 import { findUserFromUsername } from "@/lib/database/user";
 import { getNonEmptyString, getObject } from "@/lib/utils/type-validation";

@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 export function datesReferToSameDay(first: Date, second: Date): boolean {
     if (first.getFullYear() != second.getFullYear()) return false;
     if (first.getMonth() != second.getMonth()) return false;
@@ -6,21 +8,23 @@ export function datesReferToSameDay(first: Date, second: Date): boolean {
 }
 
 export function getDayName(day: number): string {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const t = useTranslations("functions.date");
     switch (day) {
         case 1:
-            return "Lun";
+            return t("mon");
         case 2:
-            return "Mar";
+            return t("tue");
         case 3:
-            return "Mer";
+            return t("wed");
         case 4:
-            return "Gio";
+            return t("thu");
         case 5:
-            return "Ven";
+            return t("fri");
         case 6:
-            return "Sab";
+            return t("sat");
         default:
-            return "Dom";
+            return t("sun");
     }
 }
 

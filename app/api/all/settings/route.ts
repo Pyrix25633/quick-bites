@@ -17,8 +17,8 @@ import {
     InternalServerErrorResponse,
     UnauthorizedResponse
 } from "@/lib/web/response";
-import { cookieName } from "@/i18n/settings";
 import { NextResponse } from "next/server";
+import { cookieName } from "@/i18n";
 
 export async function PATCH(request: Request): Promise<Response> {
     try {

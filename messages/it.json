@@ -1,0 +1,72 @@
+{
+    "pages": {
+        "home": {
+            "metadata": {
+                "title": "QuickBites - Home",
+                "description": "Home Page di QuickBites"
+            },
+            "welcome": "Benvenuto su QuickBites!"
+        },
+        "login": {
+            "metadata": {
+                "title": "QuickBites - Accedi",
+                "description": "Pagina di accesso a QuickBites"
+            }
+        },
+        "buyer": {
+            "metadata": {
+                "title": "QuickBites - Home cliente",
+                "description": "Pagina home del cliente"
+            },
+            "new-order": "Nuovo Ordine",
+            "active-orders": "Ordini Attivi"
+        },
+        "seller": {
+            "metadata": {
+                "title": "QuickBites - Seleziona la scuola",
+                "description": "Pagina per la selezione della scuola del venditore"
+            },
+            "select-school": "Seleziona la scuola"
+        },
+        "school": {
+            "metadata": {
+                "title": "QuickBites - Home venditore",
+                "description": "Pagina home del venditore"
+            }
+        }
+    },
+    "components": {
+        "login-form": {
+            "username": "Username",
+            "password": "Password",
+            "login": "Accedi",
+            "errors": {
+                "user-not-found": "Utente non trovato",
+                "wrong-password": "Password errata",
+                "server-error": "Errore al server",
+                "network-error": "Errore di rete"
+            }
+        },
+        "view-products-section": {
+            "orders-per-day": "Ordini per giorno"
+        },
+        "deliver-order-section": {
+            "deliver-order": "Consegna ordine",
+            "code": "Codice",
+            "search": "Cerca",
+            "already-delivered": "Già consegnato",
+            "deliver": "Consegna"
+        }
+    },
+    "functions": {
+        "date": {
+            "mon": "Lun",
+            "tue": "Mar",
+            "wed": "Mer",
+            "thu": "Gio",
+            "fri": "Ven",
+            "sat": "Sab",
+            "sun": "Dom"
+        }
+    }
+}
