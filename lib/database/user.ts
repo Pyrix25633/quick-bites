@@ -1,4 +1,4 @@
-import { Role, School, User } from "@prisma/client";
+import { Language, Role, School, User } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 import prisma from "../prisma";
 import * as bcrypt from "bcrypt";
@@ -47,6 +47,34 @@ export async function subtractFromUserCredit(
         },
         data: {
             credit: credit
+        }
+    });
+}
+
+export async function updateUserPassword(
+    id: number,
+    password: string
+): Promise<User> {
+    return await prisma.user.update({
+        where: {
+            id: id
+        },
+        data: {
+            passwordHash: await bcrypt.hash(password, 12)
+        }
+    });
+}
+
+export async function updateUserLanguage(
+    id: number,
+    language: Language
+): Promise<User> {
+    return await prisma.user.update({
+        where: {
+            id: id
+        },
+        data: {
+            language: language
         }
     });
 }

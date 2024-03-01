@@ -1,15 +1,18 @@
 import { Order } from "@prisma/client";
 import prisma from "../prisma";
 import { randomInt } from "crypto";
+import { NotFoundResponse } from "../web/response";
 
 const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-export async function selectOrder(id: number): Promise<Order | null> {
-    return await prisma.order.findUnique({
+export async function selectOrder(id: number): Promise<Order> {
+    const order = await prisma.order.findUnique({
         where: {
             id: id
         }
     });
+    if (order == null) throw new NotFoundResponse();
+    return order;
 }
 
 export async function createOrder(
