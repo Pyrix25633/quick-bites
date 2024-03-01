@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import prisma from "./prisma";
+import { ForbiddenResponse } from "./web/response";
 
 const ALGORITHM = "HS512";
 
@@ -30,4 +32,29 @@ export function getUserId(): number | null {
     }
 
     return payload.userId;
+}
+
+type Role = "BUYER" | "SELLER" | "ADMIN";
+
+export async function protectRoute(permittedRoles: Role[]) {
+    const userId = getUserId();
+
+    if (userId == null) throw new ForbiddenResponse();
+
+    const user = await prisma.user.findUnique({
+        select: {
+            role: true
+        },
+        where: {
+            id: userId
+        }
+    });
+
+    if (user == null) throw new ForbiddenResponse();
+
+    if (permittedRoles.includes(user.role)) {
+        return;
+    }
+
+    throw new ForbiddenResponse();
 }
