@@ -21,7 +21,7 @@ import {
 } from "@/lib/web/response";
 import { cookieName } from "@/i18n/settings";
 
-export async function PATHC(request: Request): Promise<Response> {
+export async function PATCH(request: Request): Promise<Response> {
     try {
         const userId = getUserId();
         const json = getObject(await request.json());
