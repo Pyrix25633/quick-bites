@@ -1,4 +1,5 @@
 import { Language, Role } from "@prisma/client";
+import { getUserId as getUserIdOrNull } from "../auth";
 import {
     getIntOrNull,
     getNonEmptyString,
@@ -7,7 +8,7 @@ import {
 import { BadRequestResponse, UnauthorizedResponse } from "../web/response";
 
 export function getUserId(): number {
-    const userId = getUserId();
+    const userId = getUserIdOrNull();
     if (userId == null) throw new UnauthorizedResponse();
     return userId;
 }
