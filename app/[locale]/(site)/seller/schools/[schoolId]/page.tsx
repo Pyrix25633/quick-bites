@@ -19,8 +19,8 @@ export default function Home({
     const messages = useMessages();
     return (
         <main className="container grid grid-cols-1 gap-8 py-8 md:grid-cols-2">
+            <ViewProductsSection schoolId={+schoolId} />
             <NextIntlClientProvider messages={pick(messages, "components")}>
-                <ViewProductsSection schoolId={+schoolId} />
                 <DeliverOrderSection schoolId={+schoolId} />
             </NextIntlClientProvider>
         </main>
