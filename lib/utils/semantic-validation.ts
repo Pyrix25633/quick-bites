@@ -6,6 +6,7 @@ import {
     getNonEmptyStringOrUndefined
 } from "./type-validation";
 import { BadRequestResponse, UnauthorizedResponse } from "../web/response";
+import { Decimal } from "@prisma/client/runtime/library";
 
 export function getUserId(): number {
     const userId = getUserIdOrNull();
@@ -49,4 +50,18 @@ export function getSchoolId(raw: any, role: Role): number | null {
     const parsed = getIntOrNull(raw);
     if (role == Role.BUYER && parsed == null) throw new BadRequestResponse();
     return parsed;
+}
+
+export function getDecimal(raw: any): Decimal {
+    const parsed = getNonEmptyString(raw);
+    let decimal;
+    try {
+        decimal = new Decimal(parsed);
+    } catch (e: any) {
+        throw new BadRequestResponse();
+    }
+    if (!decimal.isFinite()) throw new BadRequestResponse();
+    if (decimal.isNaN()) throw new BadRequestResponse();
+    if (decimal.decimalPlaces() > 2) throw new BadRequestResponse();
+    return decimal;
 }

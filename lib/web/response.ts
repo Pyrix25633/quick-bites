@@ -40,6 +40,12 @@ export class NotFoundResponse extends Response {
     }
 }
 
+export class UnprocessableContentResponse extends Response {
+    constructor() {
+        super(null, { status: 422, statusText: "Unprocessable Content" });
+    }
+}
+
 export class InternalServerErrorResponse extends Response {
     constructor() {
         super(null, { status: 500, statusText: "Internal Server Error" });
