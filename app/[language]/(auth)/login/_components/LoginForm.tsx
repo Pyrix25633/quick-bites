@@ -4,11 +4,11 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import React, { ForwardedRef, useState } from "react";
 import { InputHTMLAttributes } from "react";
-import { GetRequestBody } from "@/app/api/all/login/route";
+import { RequestLogin } from "@/app/api/all/login/route";
 import { useRouter } from "next/navigation";
 
 //  TODO: add errors to text inputs (red circle and description underneath)
-type FormValues = GetRequestBody;
+type FormValues = RequestLogin;
 
 function LoginForm() {
     const router = useRouter();
@@ -23,7 +23,9 @@ function LoginForm() {
     const onSubmit = (data: FormValues) => {
         axios
             .post("/api/all/login", data)
-            .then((_) => router.push("/"))
+            .then((response) => {
+                router.push("/" + response.data.role.toLowerCase());
+            })
             .catch((err) => {
                 if (err?.response?.status) {
                     switch (err.response.status) {
