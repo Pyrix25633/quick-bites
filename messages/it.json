@@ -1,5 +1,13 @@
 {
     "pages": {
+        "not-found": {
+            "metadata": {
+                "title": "QuickBites - Pagina non trovata",
+                "description": "Pagina non trovata"
+            },
+            "error-code": "404 🥪",
+            "error-description": "Non abbiamo trovato la pagina che stavi cercando ☹️"
+        },
         "home": {
             "metadata": {
                 "title": "QuickBites - Home",
