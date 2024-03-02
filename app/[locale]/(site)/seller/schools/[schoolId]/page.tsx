@@ -1,9 +1,13 @@
 import { Metadata } from "next";
 import ViewProductsSection from "./_components/ViewProductsSection";
 import DeliverOrderSection from "./_components/DeliverOrderSection";
-import { NextIntlClientProvider, useMessages } from "next-intl";
-import pick from "lodash.pick";
+import {
+    AbstractIntlMessages,
+    NextIntlClientProvider,
+    useMessages
+} from "next-intl";
 import { getTranslations } from "next-intl/server";
+import _ from "lodash";
 
 export async function generateMetadata(): Promise<Metadata> {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -20,7 +24,14 @@ export default function Home({
     return (
         <main className="container grid grid-cols-1 gap-8 py-8 md:grid-cols-2">
             <ViewProductsSection schoolId={+schoolId} />
-            <NextIntlClientProvider messages={pick(messages, "components")}>
+            <NextIntlClientProvider
+                messages={
+                    _.get(
+                        messages,
+                        "components.deliver-order-section"
+                    ) as AbstractIntlMessages
+                }
+            >
                 <DeliverOrderSection schoolId={+schoolId} />
             </NextIntlClientProvider>
         </main>

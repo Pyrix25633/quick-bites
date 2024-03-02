@@ -12,7 +12,7 @@ import { useTranslations } from "next-intl";
 type FormValues = RequestLogin;
 
 function LoginForm() {
-    const t = useTranslations("components.login-form");
+    const t = useTranslations("");
     const router = useRouter();
     const {
         register,

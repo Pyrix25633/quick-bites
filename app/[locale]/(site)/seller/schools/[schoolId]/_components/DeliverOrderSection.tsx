@@ -10,7 +10,7 @@ type DeliverOrderSectionProps = {
 export default function DeliverOrderSection({
     schoolId
 }: DeliverOrderSectionProps) {
-    const t = useTranslations("components.deliver-order-section");
+    const t = useTranslations("");
     const items = ["Filone primavera pomodoro", "Pan. cotoletta", "Toast"];
     const [orderDelivered, setOrderDelivered] = useState(false);
 
