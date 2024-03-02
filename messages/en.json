@@ -4,9 +4,7 @@
             "metadata": {
                 "title": "QuickBites - Page Not Found",
                 "description": "Page Not Found"
-            },
-            "error-code": "404 🥪",
-            "error-description": "We didn't find the page you were looking for ☹️"
+            }
         },
         "home": {
             "metadata": {
@@ -44,6 +42,16 @@
         }
     },
     "components": {
+        "errors": {
+            "not-found": {
+                "code": "404 🥪",
+                "description": "We didn't find the page you were looking for ☹️"
+            },
+            "bad-request": {
+                "code": "400 ⚠️",
+                "description": "It seems you are trying to do something that is not allowed 🚨"
+            }
+        },
         "login-form": {
             "username": "Username",
             "password": "Password",

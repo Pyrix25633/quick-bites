@@ -1,4 +1,5 @@
 import { BadRequestResponse } from "../web/response";
+import BadRequestError from "../components/errors/BadRequestError";
 
 export function getObject(raw: any): any {
     if (raw == undefined || typeof raw != "object")
@@ -13,11 +14,11 @@ export function getInt(raw: any): number {
     return raw;
 }
 
-export function getIntFromString(raw: string): number {
+export function getIntParam(raw: string): number {
     if (raw == undefined || typeof raw != "string")
         throw new BadRequestResponse();
     const parsed = parseInt(raw);
-    if (!Number.isSafeInteger(parsed)) throw new BadRequestResponse();
+    if (!Number.isSafeInteger(parsed)) throw BadRequestError();
     return parsed;
 }
 
