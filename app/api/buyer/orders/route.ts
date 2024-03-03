@@ -23,7 +23,7 @@ export async function POST(request: Request): Promise<Response> {
         const userId = await protectRoute(["BUYER"]);
         const json = getObject(await request.json());
         const currentDate = new Date();
-        const deliveryDay = new Date(getInt(json.deliveryDay)); //TODO: check that the order can be made for this date
+        const deliveryDay = new Date(getInt(json.deliveryDay));
         const products: RequestProduct[] = await getRequestProducts(
             json,
             currentDate,
