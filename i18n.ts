@@ -3,7 +3,7 @@ import { getRequestConfig } from "next-intl/server";
 
 export const defaultLocale = "en";
 export const locales = [defaultLocale, "it"];
-export const cookieName = "NEXT_LOCALE";
+export const localeCookieName = "NEXT_LOCALE";
 
 export default getRequestConfig(
     async ({ locale }: { locale: string }): Promise<{ messages: any }> => {

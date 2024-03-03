@@ -1,9 +1,17 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import prisma from "./prisma";
-import { ForbiddenResponse } from "./web/response";
+import {
+    ForbiddenResponse,
+    NotFoundResponse,
+    UnauthorizedResponse
+} from "./web/response";
+import { findUser } from "./database/user";
+import { getUserId as getUserIdOrThrow } from "./utils/semantic-validation";
 
-const ALGORITHM = "HS512";
+const algorithm = "HS512";
+const password = "bv/2ad1b.yf@atw";
+const expiresIn = 60 * 60 * 24 * 14;
+export const authCookieName = "auth_token";
 
 type TokenPayload = {
     userId: number;
@@ -11,50 +19,35 @@ type TokenPayload = {
 
 export function getNewToken(userId: number) {
     const payload: TokenPayload = { userId };
-
-    return jwt.sign(payload, "password", {
-        algorithm: ALGORITHM,
-        expiresIn: 60 * 60
+    return jwt.sign(payload, password, {
+        algorithm: algorithm,
+        expiresIn: expiresIn
     });
 }
 
 export function getUserId(): number | null {
-    const token = cookies().get("auth_token");
-
-    if (!token) return null;
-
-    let payload;
-
+    const token = cookies().get(authCookieName);
+    if (token == undefined) return null;
     try {
-        payload = jwt.verify(token.value, "password") as TokenPayload;
+        const payload = jwt.verify(token.value, password) as TokenPayload;
+        return payload.userId;
     } catch (_) {
         return null;
     }
-
-    return payload.userId;
 }
 
 type Role = "BUYER" | "SELLER" | "ADMIN";
 
 export async function protectRoute(permittedRoles: Role[]): Promise<number> {
-    const userId = getUserId();
-
-    if (userId == null) throw new ForbiddenResponse();
-
-    const user = await prisma.user.findUnique({
-        select: {
-            role: true
-        },
-        where: {
-            id: userId
+    const userId = getUserIdOrThrow();
+    try {
+        const user = await findUser(userId);
+        if (permittedRoles.includes(user.role)) {
+            return userId;
         }
-    });
-
-    if (user == null) throw new ForbiddenResponse();
-
-    if (permittedRoles.includes(user.role)) {
-        return userId;
+    } catch (e) {
+        if (e instanceof NotFoundResponse) throw new UnauthorizedResponse();
+        throw e;
     }
-
     throw new ForbiddenResponse();
 }

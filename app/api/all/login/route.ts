@@ -1,5 +1,5 @@
-import { cookieName } from "@/i18n";
-import { getNewToken } from "@/lib/auth";
+import { localeCookieName } from "@/i18n";
+import { authCookieName, getNewToken } from "@/lib/auth";
 import { findUserFromUsername } from "@/lib/database/user";
 import { getNonEmptyString, getObject } from "@/lib/utils/type-validation";
 import {
@@ -23,12 +23,12 @@ export async function POST(request: Request) {
         if (!bcrypt.compare(password, user.passwordHash))
             throw new UnauthorizedResponse();
         const response = NextResponse.json({ role: user.role });
-        response.cookies.set("auth_token", getNewToken(user.id), {
+        response.cookies.set(authCookieName, getNewToken(user.id), {
             httpOnly: true,
             sameSite: "strict",
             secure: process.env.NODE_ENV === "production"
         });
-        response.cookies.set(cookieName, user.language.toLowerCase());
+        response.cookies.set(localeCookieName, user.language.toLowerCase());
         return response;
     } catch (e: any) {
         if (e instanceof Response) return e;
