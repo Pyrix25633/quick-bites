@@ -1,14 +1,12 @@
 import { protectRoute } from "@/lib/auth";
 import { selectOrder, updateCheckedByBuyer } from "@/lib/database/order";
 import { datesReferToSameDay } from "@/lib/utils/date";
-import { getUserId } from "@/lib/utils/semantic-validation";
 import { getInt } from "@/lib/utils/type-validation";
 import {
     ForbiddenResponse,
     InternalServerErrorResponse,
-    NotFoundResponse,
     OkResponse,
-    UnauthorizedResponse
+    UnprocessableContentResponse
 } from "@/lib/web/response";
 import { Order } from "@prisma/client";
 
@@ -34,8 +32,8 @@ function verifyThatOrderDeliveryCanBeRequested(
     order: Order,
     userId: number
 ): void {
-    if (order.userId != userId) throw new UnauthorizedResponse();
+    if (order.userId != userId) throw new ForbiddenResponse();
     if (datesReferToSameDay(order.deliveryDay, new Date()))
-        throw new ForbiddenResponse();
-    if (order.checkedByBuyer) throw new ForbiddenResponse();
+        throw new UnprocessableContentResponse();
+    if (order.checkedByBuyer) throw new UnprocessableContentResponse();
 }

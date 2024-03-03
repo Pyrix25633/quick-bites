@@ -226,7 +226,8 @@ async function upsertFakeProduct() {
                     price: new Prisma.Decimal(
                         faker.finance.amount({ min: 1, max: 4 })
                     ),
-                    description: faker.commerce.productDescription()
+                    description: faker.commerce.productDescription(),
+                    orderAdvance: randomInt(0, 19 * 2) * 30
                 }
             });
             error = false;

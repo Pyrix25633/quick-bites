@@ -3,9 +3,9 @@ import { selectOrder, updateCheckedBySeller } from "@/lib/database/order";
 import { datesReferToSameDay } from "@/lib/utils/date";
 import { getInt } from "@/lib/utils/type-validation";
 import {
-    ForbiddenResponse,
     InternalServerErrorResponse,
-    OkResponse
+    OkResponse,
+    UnprocessableContentResponse
 } from "@/lib/web/response";
 import { Order } from "@prisma/client";
 
@@ -28,8 +28,8 @@ export async function POST(
 }
 
 function verifyThatOrderCanBeDelivered(order: Order, date: Date): void {
-    if (!order.checkedByBuyer) throw new ForbiddenResponse();
-    if (order.checkedBySeller != null) throw new ForbiddenResponse();
+    if (!order.checkedByBuyer) throw new UnprocessableContentResponse();
+    if (order.checkedBySeller != null) throw new UnprocessableContentResponse();
     if (!datesReferToSameDay(order.deliveryDay, date))
-        throw new ForbiddenResponse();
+        throw new UnprocessableContentResponse();
 }
