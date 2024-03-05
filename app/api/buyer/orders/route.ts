@@ -15,8 +15,7 @@ import {
 import { subtractFromUserCredit } from "@/lib/database/user";
 import { findProduct } from "@/lib/database/product";
 import { protectRoute } from "@/lib/auth";
-
-const orderDeadline = new Date("1970/01/01 10:15:00");
+import { orderIsInTime } from "@/lib/utils/date";
 
 export async function POST(request: Request): Promise<Response> {
     try {
@@ -64,19 +63,4 @@ async function getRequestProducts(
     }
     if (products.length == 0) throw new BadRequestResponse();
     return products;
-}
-
-export function orderIsInTime(
-    currentDate: Date,
-    deliveryDay: Date,
-    productOrderAdvance: number
-): boolean {
-    const deadline = new Date(
-        deliveryDay.getFullYear(),
-        deliveryDay.getMonth(),
-        deliveryDay.getDate(),
-        orderDeadline.getHours(),
-        orderDeadline.getMinutes() - productOrderAdvance
-    );
-    return currentDate <= deadline;
 }
