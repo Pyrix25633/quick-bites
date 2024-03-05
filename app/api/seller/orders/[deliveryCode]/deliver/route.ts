@@ -1,7 +1,10 @@
 import { protectRoute } from "@/lib/auth";
-import { selectOrder, updateCheckedBySeller } from "@/lib/database/order";
+import {
+    findOrderFromDeliveryCode,
+    updateCheckedBySeller
+} from "@/lib/database/order";
 import { datesReferToSameDay } from "@/lib/utils/date";
-import { getInt } from "@/lib/utils/type-validation";
+import { getDeliveryCode } from "@/lib/utils/semantic-validation";
 import {
     InternalServerErrorResponse,
     OkResponse,
@@ -11,15 +14,15 @@ import { Order } from "@prisma/client";
 
 export async function POST(
     _request: Request,
-    { params }: { params: { orderId: string } }
+    { params }: { params: { deliveryCode: string } }
 ): Promise<Response> {
     try {
         await protectRoute(["SELLER"]);
-        const orderId = getInt(params.orderId);
+        const deliveryCode = getDeliveryCode(params.deliveryCode);
         const date = new Date();
-        const order: Order = await selectOrder(orderId);
+        const order: Order = await findOrderFromDeliveryCode(deliveryCode);
         verifyThatOrderCanBeDelivered(order, date);
-        await updateCheckedBySeller(orderId, date);
+        await updateCheckedBySeller(order.id, date);
         return new OkResponse();
     } catch (e: any) {
         if (e instanceof Response) return e;
@@ -28,7 +31,6 @@ export async function POST(
 }
 
 function verifyThatOrderCanBeDelivered(order: Order, date: Date): void {
-    if (!order.checkedByBuyer) throw new UnprocessableContentResponse();
     if (order.checkedBySeller != null) throw new UnprocessableContentResponse();
     if (!datesReferToSameDay(order.deliveryDay, date))
         throw new UnprocessableContentResponse();

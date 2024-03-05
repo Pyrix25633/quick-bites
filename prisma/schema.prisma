@@ -26,7 +26,6 @@ model Order {
   deliveryDay     DateTime           @db.Date
   deliveryCode    String?            @unique
   checkedBySeller DateTime?
-  checkedByBuyer  Boolean            @default(false)
   userId          Int
   user            User               @relation(fields: [userId], references: [id])
   products        ProductsOnOrders[]

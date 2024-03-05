@@ -7,6 +7,9 @@ import {
 } from "./type-validation";
 import { BadRequestResponse, UnauthorizedResponse } from "../web/response";
 import { Decimal } from "@prisma/client/runtime/library";
+import { deliveryCodeChars } from "../database/order";
+
+export const emailDomain = "iisvittorioveneto.it";
 
 export function getUserId(): number {
     const userId = getUserIdOrNull();
@@ -18,7 +21,9 @@ export function getEmail(raw: any): string {
     const parsed = getNonEmptyString(raw);
     if (
         parsed.match(
-            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@/ +
+                emailDomain +
+                /$/
         )
     )
         return parsed;
@@ -46,12 +51,6 @@ export function getLanguageOrUndefined(raw: any): Language | undefined {
     return language;
 }
 
-export function getSchoolId(raw: any, role: Role): number | null {
-    const parsed = getIntOrNull(raw);
-    if (role == Role.BUYER && parsed == null) throw new BadRequestResponse();
-    return parsed;
-}
-
 export function getDecimal(raw: any): Decimal {
     const parsed = getNonEmptyString(raw);
     let decimal;
@@ -64,4 +63,13 @@ export function getDecimal(raw: any): Decimal {
     if (decimal.isNaN()) throw new BadRequestResponse();
     if (decimal.decimalPlaces() > 2) throw new BadRequestResponse();
     return decimal;
+}
+
+export function getDeliveryCode(raw: any): string {
+    const parsed = getNonEmptyString(raw);
+    if (parsed.length != 4) throw new BadRequestResponse();
+    for (const c of parsed) {
+        if (!deliveryCodeChars.includes(c)) throw new BadRequestResponse();
+    }
+    return parsed;
 }

@@ -3,12 +3,24 @@ import prisma from "../prisma";
 import { randomInt } from "crypto";
 import { NotFoundResponse } from "../web/response";
 
-const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+export const deliveryCodeChars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-export async function selectOrder(id: number): Promise<Order> {
+export async function findOrder(id: number): Promise<Order> {
     const order = await prisma.order.findUnique({
         where: {
             id: id
+        }
+    });
+    if (order == null) throw new NotFoundResponse();
+    return order;
+}
+
+export async function findOrderFromDeliveryCode(
+    deliveryCode: string
+): Promise<Order> {
+    const order = await prisma.order.findUnique({
+        where: {
+            deliveryCode: deliveryCode
         }
     });
     if (order == null) throw new NotFoundResponse();
@@ -27,7 +39,7 @@ export async function createOrder(
     });
 }
 
-export async function updateCheckedByBuyer(id: number): Promise<Order> {
+export async function updateDeliveryCode(id: number): Promise<Order> {
     let deliverycode: string;
     let order: Order | null;
     do {
@@ -38,7 +50,6 @@ export async function updateCheckedByBuyer(id: number): Promise<Order> {
                     id: id
                 },
                 data: {
-                    checkedByBuyer: true,
                     deliveryCode: deliverycode
                 }
             });
@@ -56,7 +67,7 @@ export function generateDeliveryCode(): string {
 }
 
 function generateChar(): string {
-    return chars[randomInt(chars.length)];
+    return deliveryCodeChars[randomInt(deliveryCodeChars.length)];
 }
 
 export async function updateCheckedBySeller(

@@ -8,6 +8,7 @@ export function getObject(raw: any): any {
 }
 
 export function getInt(raw: any): number {
+    raw = parseInt(raw);
     if (raw == undefined || typeof raw != "number")
         throw new BadRequestResponse();
     if (!Number.isSafeInteger(raw)) throw new BadRequestResponse();

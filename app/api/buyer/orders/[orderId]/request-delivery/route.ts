@@ -1,5 +1,5 @@
 import { protectRoute } from "@/lib/auth";
-import { selectOrder, updateCheckedByBuyer } from "@/lib/database/order";
+import { findOrder, updateDeliveryCode } from "@/lib/database/order";
 import { datesReferToSameDay } from "@/lib/utils/date";
 import { getInt } from "@/lib/utils/type-validation";
 import {
@@ -17,10 +17,10 @@ export async function POST(
     try {
         const userId = await protectRoute(["BUYER"]);
         const orderId = getInt(params.orderId);
-        const order: Order = await selectOrder(orderId);
+        const order: Order = await findOrder(orderId);
         verifyThatOrderDeliveryCanBeRequested(order, userId);
         return new OkResponse({
-            deliveryCode: (await updateCheckedByBuyer(orderId)).deliveryCode
+            deliveryCode: (await updateDeliveryCode(orderId)).deliveryCode
         });
     } catch (e: any) {
         if (e instanceof Response) return e;
@@ -35,5 +35,5 @@ function verifyThatOrderDeliveryCanBeRequested(
     if (order.userId != userId) throw new ForbiddenResponse();
     if (datesReferToSameDay(order.deliveryDay, new Date()))
         throw new UnprocessableContentResponse();
-    if (order.checkedByBuyer) throw new UnprocessableContentResponse();
+    if (order.deliveryCode != null) throw new UnprocessableContentResponse();
 }
