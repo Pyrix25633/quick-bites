@@ -5,9 +5,11 @@ import { AbstractIntlMessages, NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import _ from "lodash";
 import { getIntParam } from "@/lib/utils/type-validation";
-import { findSchool } from "@/lib/database/school";
+import { findSchool as prismaFindSchool } from "@/lib/database/school";
 import { isValidElement } from "react";
 import NotFoundError from "@/lib/components/errors/NotFoundError";
+import { NotFoundResponse } from "@/lib/web/response";
+import { School } from "@prisma/client";
 
 export async function generateMetadata(): Promise<Metadata> {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -23,8 +25,7 @@ export default async function Home({
     try {
         const messages = await getMessages();
         const parsedSchoolId = getIntParam(schoolId);
-        const school = await findSchool(parsedSchoolId);
-        if (school == null) throw NotFoundError();
+        const school = findSchool(parsedSchoolId);
         return (
             <main className="container grid grid-cols-1 gap-8 py-8 md:grid-cols-2">
                 <ViewProductsSection schoolId={parsedSchoolId} />
@@ -43,6 +44,15 @@ export default async function Home({
     } catch (e: any) {
         if (e instanceof Promise) e = await e;
         if (isValidElement(e)) return e;
+        throw e;
+    }
+}
+
+async function findSchool(id: number): Promise<School> {
+    try {
+        return await prismaFindSchool(id);
+    } catch (e: any) {
+        if (e instanceof NotFoundResponse) throw NotFoundError();
         throw e;
     }
 }

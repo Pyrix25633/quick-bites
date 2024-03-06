@@ -9,15 +9,24 @@ datasource db {
 
 model User {
   id           Int      @id @default(autoincrement())
-  username     String   @unique
+  username     String   @unique @db.VarChar(24)
   passwordHash String   @db.Char(60)
-  email        String   @unique
+  email        String   @unique @db.VarChar(56)
   language     Language @default(IT)
   role         Role
   credit       Decimal  @db.Decimal(6, 2) @default(0)
   schoolId     Int?
   school       School?  @relation(fields: [schoolId], references: [id])
   orders       Order[]
+}
+
+model TempUser {
+  email            String @id @db.VarChar(56)
+  passwordHash     String @db.Char(60)
+  language         Language
+  schoolId         Int?
+  school           School? @relation(fields: [schoolId], references: [id])
+  confirmationCode Int
 }
 
 model Order {
@@ -32,9 +41,10 @@ model Order {
 }
 
 model School {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  users User[]
+  id        Int    @id @default(autoincrement())
+  name      String @unique @db.VarChar(32)
+  users     User[]
+  tempUsers TempUser[]
 }
 
 model ProductsOnOrders {
@@ -50,7 +60,7 @@ model ProductsOnOrders {
 
 model Product {
   id           Int                @id @default(autoincrement())
-  name         String             @unique
+  name         String             @unique @db.VarChar(32)
   description  String
   price        Decimal            @db.Decimal(4, 2)
   orderAdvance Int                @db.UnsignedSmallInt

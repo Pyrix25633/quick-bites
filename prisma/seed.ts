@@ -242,14 +242,14 @@ async function upsertFakeOrder() {
     let error;
     do {
         try {
-            const today = new Date();
+            const max = new Date("2025/12/31 23:59:59");
             const createdAt: Date = faker.date.between({
                 from: new Date("2020"),
-                to: getPreviousDay(today)
+                to: getPreviousDay(max)
             });
             const deliveryDay: Date = faker.date.between({
                 from: getNextDay(createdAt),
-                to: today
+                to: max
             });
             const order: Order = await prisma.order.create({
                 data: {

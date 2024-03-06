@@ -9,7 +9,7 @@ import { BadRequestResponse, UnauthorizedResponse } from "../web/response";
 import { Decimal } from "@prisma/client/runtime/library";
 import { deliveryCodeChars } from "../database/order";
 
-export const emailDomain = "iisvittorioveneto.it";
+export const schoolEmailDomain = "iisvittorioveneto.it";
 
 export function getUserId(): number {
     const userId = getUserIdOrNull();
@@ -21,8 +21,19 @@ export function getEmail(raw: any): string {
     const parsed = getNonEmptyString(raw);
     if (
         parsed.match(
+            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+    )
+        return parsed;
+    throw new BadRequestResponse();
+}
+
+export function getSchoolEmail(raw: any): string {
+    const parsed = getNonEmptyString(raw);
+    if (
+        parsed.match(
             /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@/ +
-                emailDomain +
+                schoolEmailDomain +
                 /$/
         )
     )
@@ -40,12 +51,22 @@ export function getRole(raw: any): Role {
     return role;
 }
 
+export function getLanguage(raw: any): Language {
+    const parsed = getNonEmptyString(raw);
+    let language;
+    Object.values(Language).forEach((value) => {
+        if (value == parsed) language = value;
+    });
+    if (language == undefined) throw new BadRequestResponse();
+    return language;
+}
+
 export function getLanguageOrUndefined(raw: any): Language | undefined {
     const parsed = getNonEmptyStringOrUndefined(raw);
     if (parsed === undefined) return undefined;
     let language;
-    language = Object.values(Language).forEach((value) => {
-        if (value == parsed) return value;
+    Object.values(Language).forEach((value) => {
+        if (value == parsed) language = value;
     });
     if (language == undefined) throw new BadRequestResponse();
     return language;
