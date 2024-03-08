@@ -2,6 +2,7 @@ import {
     CreatedResponse,
     InternalServerErrorResponse,
     NotFoundResponse,
+    OkResponse,
     UnprocessableContentResponse
 } from "@/lib/web/response";
 import {
@@ -12,7 +13,7 @@ import {
 import { getEmail, getLanguage } from "@/lib/utils/semantic-validation";
 import { findSchool as prismaFindSchool } from "@/lib/database/school";
 import { createTempUser } from "@/lib/database/temp-user";
-import { randomInt } from "crypto";
+import { sendConfirmationEmail } from "@/lib/mail";
 
 export async function POST(request: Request): Promise<Response> {
     try {
@@ -23,6 +24,7 @@ export async function POST(request: Request): Promise<Response> {
         const schoolId = getIntOrNull(json.schoolId);
         const school = schoolId == null ? null : await findSchool(schoolId);
         const confirmationCode = Math.random() * 900000 + 100000; //TODO: send confirmation email
+        sendConfirmationEmail(email, confirmationCode);
         const tempUser = await createTempUser(
             email,
             password,
