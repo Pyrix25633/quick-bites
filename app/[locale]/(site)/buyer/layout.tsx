@@ -9,7 +9,7 @@ export default async function BuyerLayout({ children }: BuyerLayoutProps) {
     try {
         await protectRoute(["BUYER"]);
     } catch (_) {
-        redirect("../login");
+        redirect("/login");
     }
 
     return <>{children}</>;

@@ -9,7 +9,7 @@ export default async function SellerLayout({ children }: SellerLayoutProps) {
     try {
         await protectRoute(["SELLER"]);
     } catch (_) {
-        redirect("../login");
+        redirect("/login");
     }
 
     return <>{children}</>;

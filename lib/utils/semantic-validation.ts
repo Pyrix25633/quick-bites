@@ -1,7 +1,6 @@
 import { Language, Role } from "@prisma/client";
 import { getUserId as getUserIdOrNull } from "../auth";
 import {
-    getIntOrNull,
     getNonEmptyString,
     getNonEmptyStringOrUndefined
 } from "./type-validation";
