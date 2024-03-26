@@ -15,10 +15,11 @@ import {
 import {
     BadRequestResponse,
     InternalServerErrorResponse,
+    NoContentNextResponse,
     UnauthorizedResponse
 } from "@/lib/web/response";
 import { NextResponse } from "next/server";
-import { cookieName } from "@/i18n";
+import { localeCookieName } from "@/i18n";
 
 export async function PATCH(request: Request): Promise<Response> {
     try {
@@ -36,10 +37,10 @@ export async function PATCH(request: Request): Promise<Response> {
                 throw new UnauthorizedResponse();
             await updateUserPassword(userId, password);
         }
-        const response = NextResponse.json({});
+        const response = NoContentNextResponse.next();
         if (language != undefined) {
             await updateUserLanguage(userId, language);
-            response.cookies.set(cookieName, language.toLowerCase());
+            response.cookies.set(localeCookieName, language.toLowerCase());
         }
         return response;
     } catch (e: any) {

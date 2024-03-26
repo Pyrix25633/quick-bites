@@ -23,7 +23,7 @@ export async function POST(request: Request): Promise<Response> {
         const language = getLanguage(json.language);
         const schoolId = getIntOrNull(json.schoolId);
         const school = schoolId == null ? null : await findSchool(schoolId);
-        const confirmationCode = Math.random() * 900000 + 100000; //TODO: send confirmation email
+        const confirmationCode = Math.random() * 900000 + 100000;
         sendConfirmationEmail(email, confirmationCode);
         const tempUser = await createTempUser(
             email,

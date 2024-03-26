@@ -4,6 +4,7 @@ import { findUserFromUsername } from "@/lib/database/user";
 import { getNonEmptyString, getObject } from "@/lib/utils/type-validation";
 import {
     InternalServerErrorResponse,
+    OkNextResponse,
     UnauthorizedResponse
 } from "@/lib/web/response";
 import * as bcrypt from "bcrypt";
@@ -22,7 +23,7 @@ export async function POST(request: Request) {
         const user = await findUserFromUsername(username);
         if (!bcrypt.compare(password, user.passwordHash))
             throw new UnauthorizedResponse();
-        const response = NextResponse.json({ role: user.role });
+        const response = OkNextResponse.json({ role: user.role });
         response.cookies.set(authCookieName, getNewToken(user.id), {
             httpOnly: true,
             sameSite: "strict",

@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server";
+
 export class OkResponse extends Response {
     constructor(body: object | null = null) {
         super(body == null ? null : JSON.stringify(body), {
@@ -49,5 +51,17 @@ export class UnprocessableContentResponse extends Response {
 export class InternalServerErrorResponse extends Response {
     constructor() {
         super(null, { status: 500, statusText: "Internal Server Error" });
+    }
+}
+
+export class NoContentNextResponse extends NextResponse {
+    static next(): NextResponse {
+        return NextResponse.next({ status: 204, statusText: "No Content" });
+    }
+}
+
+export class OkNextResponse extends NextResponse {
+    static json<JsonBody>(body: JsonBody): NextResponse<JsonBody> {
+        return NextResponse.json(body, { status: 200, statusText: "OK" });
     }
 }
