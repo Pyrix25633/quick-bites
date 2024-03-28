@@ -7,6 +7,7 @@ import { datesReferToSameDay } from "@/lib/utils/date";
 import { getDeliveryCode } from "@/lib/utils/semantic-validation";
 import {
     InternalServerErrorResponse,
+    NoContentResponse,
     OkResponse,
     UnprocessableContentResponse
 } from "@/lib/web/response";
@@ -23,7 +24,7 @@ export async function POST(
         const order: Order = await findOrderFromDeliveryCode(deliveryCode);
         verifyThatOrderCanBeDelivered(order, date);
         await updateCheckedBySeller(order.id, date);
-        return new OkResponse();
+        return new NoContentResponse();
     } catch (e: any) {
         if (e instanceof Response) return e;
         return new InternalServerErrorResponse();

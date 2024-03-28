@@ -33,7 +33,7 @@ function verifyThatOrderDeliveryCanBeRequested(
     userId: number
 ): void {
     if (order.userId != userId) throw new ForbiddenResponse();
-    if (datesReferToSameDay(order.deliveryDay, new Date()))
+    if (!datesReferToSameDay(order.deliveryDay, new Date()))
         throw new UnprocessableContentResponse();
     if (order.deliveryCode != null) throw new UnprocessableContentResponse();
 }

@@ -18,6 +18,12 @@ export class CreatedResponse extends Response {
     }
 }
 
+export class NoContentResponse extends Response {
+    constructor() {
+        super(null, { status: 204, statusText: "No Content" });
+    }
+}
+
 export class BadRequestResponse extends Response {
     constructor() {
         super(null, { status: 400, statusText: "Bad Request" });

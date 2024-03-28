@@ -1,7 +1,9 @@
 import {
     BadRequestResponse,
     CreatedResponse,
-    InternalServerErrorResponse
+    InternalServerErrorResponse,
+    NotFoundResponse,
+    UnprocessableContentResponse
 } from "@/lib/web/response";
 import {
     getIntOrNull,
@@ -14,7 +16,7 @@ import {
     getRole
 } from "@/lib/utils/semantic-validation";
 import { createUser } from "@/lib/database/user";
-import { findSchool } from "@/lib/database/school";
+import { findSchool as prismaFindSchool } from "@/lib/database/school";
 import { protectRoute } from "@/lib/auth";
 
 export async function POST(request: Request): Promise<Response> {
@@ -42,5 +44,15 @@ export async function POST(request: Request): Promise<Response> {
     } catch (e: any) {
         if (e instanceof Response) return e;
         return new InternalServerErrorResponse();
+    }
+}
+
+async function findSchool(id: number) {
+    try {
+        return await prismaFindSchool(id);
+    } catch (e: any) {
+        if (e instanceof NotFoundResponse)
+            throw new UnprocessableContentResponse();
+        throw e;
     }
 }
