@@ -1,0 +1,369 @@
+openapi: 3.1.0
+info:
+    description: App to order pizzas and sandwiches
+    version: alpha
+    title: Quick Bites
+    contact:
+        email: biral.mattia@gmail.com
+    license:
+        name: GPL-3.0
+        url: https://www.gnu.org/licenses/gpl-3.0.en.html
+tags:
+    - name: all
+      description: Accessible to all users, sometimes even unauthenticated ones
+    - name: buyer
+      description: Accessible only by buyers
+    - name: seller
+      description: Accessible only by sellers
+    - name: admin
+      description: Accessible only by admins
+components:
+    securitySchemes:
+        cookieAuth:
+            type: apiKey
+            in: cookie
+            name: auth-token
+    schemas:
+        email:
+            type: string
+            format: email
+            example: name.surname@domain.com
+        language:
+            type: string
+            enum:
+                - it
+                - en
+        role:
+            type: string
+            enum:
+                - BUYER
+                - SELLER
+                - ADMIN
+        schoolId:
+            oneOf:
+                - type: integer
+                - type: "null"
+            example: 1
+paths:
+    /all/temp-users:
+        post:
+            tags:
+                - all
+            summary: Adds a new temporary user
+            description: First step of the registration process
+            operationId: all/temp-users
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    $ref: "#/components/schemas/email"
+                                password:
+                                    type: string
+                                language:
+                                    $ref: "#/components/schemas/language"
+                                schoolId:
+                                    $ref: "#/components/schemas/schoolId"
+            responses:
+                "201":
+                    description: The first step of the registration succeded
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    email:
+                                        type: string
+                                        format: email
+                                        example: name.surname@domain.com
+                "400":
+                    description: Bad Request
+                "422":
+                    description: "Unprocessable Content: no schools found with specified schoolId or temporary user cannot be created"
+    /all/temp-users/{email}/confirm:
+        post:
+            tags:
+                - all
+            summary: Confirms a temporary user
+            description: Second and last step of the registration process
+            operationId: all/temp-users/[email]/confirm
+            parameters:
+                - in: path
+                  name: email
+                  description: The email of the user that has to be confimed
+                  schema:
+                      $ref: "#/components/schemas/email"
+                  required: true
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                confirmationCode:
+                                    type: integer
+                                    example: 567134
+            responses:
+                "201":
+                    description: The second and last step of the registration succeded
+                "400":
+                    description: Bad Request
+                "404":
+                    description: "Not Found: no temporary users found with specified email"
+    /all/login:
+        post:
+            tags:
+                - all
+            summary: Logs the user in
+            description: Sets the authentication and localization cookies
+            operationId: /all/login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                    example: name.surname
+                                password:
+                                    type: string
+            responses:
+                "200":
+                    description: Login Succesfull
+                    headers:
+                        Set-Cookie:
+                            schema:
+                                type: string
+                                example: >
+                                    Set-Cookie: auth-token=...; Path=/; SameSite=Strict; HttpOnly; Secure --
+                                    Set-Cookie: NEXT_LOCALE=...; Path=/
+                            description: Sets authentication and language cookies
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    role:
+                                        $ref: "#/components/schemas/role"
+                "400":
+                    description: Bad Request
+                "401":
+                    description: "Unauthorized: wrong password"
+                "404":
+                    description: "Not Found: no users found with specified username"
+    /all/settings:
+        patch:
+            tags:
+                - all
+            summary: Modifies the user settings
+            description: Updates password and language
+            operationId: /all/settings
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                password:
+                                    type: string
+                                    required: false
+                                oldPassword:
+                                    type: string
+                                    required: false
+                                language:
+                                    $ref: "#/components/schemas/language"
+                                    required: false
+            responses:
+                "204":
+                    description: Settings updated successfully
+                    headers:
+                        Set-Cookie:
+                            schema:
+                                type: string
+                                example: "Set-Cookie: NEXT_LOCALE=...; Path=/"
+                            description: Sets language cookie
+                "400":
+                    description: Bad Request
+                "401":
+                    description: "Unauthorized: wrong oldPassword"
+                "404":
+                    description: "Not Found: no users found with specified username"
+    /buyer/orders:
+        post:
+            tags:
+                - buyer
+            summary: Creates a new order
+            description: Creates a new order for the specified day and decreases buyer's credit
+            operationId: /buyer/orders
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                deliveryDay:
+                                    type: integer
+                                    example: 1711615704027
+                                products:
+                                    type: array
+                                    items:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                                example: 12
+                                            quantity:
+                                                type: integer
+                                                example: 3
+            responses:
+                "201":
+                    description: Order created successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                        example: 356
+                "400":
+                    description: Bad Request
+                "422":
+                    description: "Unprocessable Content: no product found with specified id or specified procuct cannot be ordered now"
+    /buyer/orders/{orderId}/request-delivery:
+        post:
+            tags:
+                - buyer
+            summary: Requests the delivery of an order
+            description: Gets the delivery code
+            operationId: /buyer/orders/[orderId]/request-delivery
+            parameters:
+                - in: path
+                  name: orderId
+                  description: The id of the order that is requested to be delivered
+                  schema:
+                      type: integer
+                  required: true
+            responses:
+                "200":
+                    description: Delivery requested succesfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    deliveryCode:
+                                        type: string
+                                        example: x8l4
+                "400":
+                    description: Bad Request
+                "403":
+                    description: "Forbidden: user does not own the specified order"
+                "404":
+                    description: "Not Found: no order found with specified orderId"
+                "422":
+                    description: "Unprocessable Content: order is not for today, delivery has already been requested"
+    /seller/products:
+        post:
+            tags:
+                - seller
+            summary: Creates a new product
+            description: Creates a new product with specified properties
+            operationId: /seller/products
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                                    example: Filone primavera
+                                description:
+                                    type: string
+                                    example: Il panino con la primavera dentro
+                                price:
+                                    type: string
+                                    example: "4.49"
+            responses:
+                "201":
+                    description: Product created successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                        example: 27
+                "400":
+                    description: Bad Request
+                "422":
+                    description: "Unprocessable Content: price is higher than 10 or product cannot be created"
+    /seller/orders/{deliveryCode}/deliver:
+        post:
+            tags:
+                - seller
+            summary: Requests the delivery of an order
+            description: Gets the delivery code
+            operationId: /seller/orders/[deliveryCode]/deliver
+            parameters:
+                - in: path
+                  name: deliveryCode
+                  description: The delivery code of the order that has to be delivered
+                  schema:
+                      type: string
+                      example: x8l4
+                  required: true
+            responses:
+                "204":
+                    description: Order delivered succesfully
+                "400":
+                    description: Bad Request
+                "404":
+                    description: "Not Found: no order found with specified deliveryCode"
+                "422":
+                    description: "Unprocessable Content: order is not for today or has already been delivered"
+    /admin/users:
+        post:
+            tags:
+                - admin
+            summary: Creates a new user
+            description: Creates a new user with specified role and properties
+            operationId: /admin/users
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    $ref: "#/components/schemas/email"
+                                password:
+                                    type: string
+                                language:
+                                    $ref: "#/components/schemas/language"
+                                role:
+                                    $ref: "#/components/schemas/role"
+                                schoolId:
+                                    $ref: "#/components/schemas/schoolId"
+            responses:
+                "201":
+                    description: Product created successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                        example: 56
+                "400":
+                    description: Bad Request
+                "422":
+                    description: "Unprocessable Content: no schools found with specified schoolId or user cannot be created"
+servers:
+    - url: https://iisvittorioveneto.quickbites.it
